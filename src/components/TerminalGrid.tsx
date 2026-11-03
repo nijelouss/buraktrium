@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState, memo, useCallback, useMemo, forwardRef } from 'react';
+import { useEffect, useRef, useState, memo, useCallback, useMemo, forwardRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence } from 'framer-motion';
-import { X, Maximize2, Minimize2, Plus, Grid3X3, Layers, Pin, Move, LayoutGrid } from 'lucide-react';
+import { X, Maximize2, Minimize2, Plus, Grid3X3, Layers, Pin, Move, LayoutGrid, Expand } from 'lucide-react';
 import { useTerminalStore } from '../store/terminalStore';
 import { useAppStore, GridLayout } from '../store/appStore';
 import { TerminalView } from './TerminalView';
 import { setDragData, getDragData, isTerminalDrag } from '../utils/dragDrop';
 import { computeGridNavTarget } from '../lib/gridNav';
 import { computeEmptyCellCount } from '../lib/gridEmptyCells';
-import { moveRect, placeNewRect, resizeRect, tileRects, type ContainerSize, type PaneRect, type ResizeEdges } from '../lib/freeformLayout';
+import { applyDock, fillGaps, moveRect, pickDragAction, placeNewRect, resizeRect, swapRects, tileRects, dockRect, type ContainerSize, type DragAction, type PaneRect, type ResizeEdges } from '../lib/freeformLayout';
 import { matchPanes } from '../lib/savedLayouts';
-import { GridLayoutsMenu, rememberFreeLayout, terminalInfo } from './GridLayoutsMenu';
+import { GridLayoutsMenu } from './GridLayoutsMenu';
+import { rememberFreeLayout, terminalInfo } from '../lib/sessionDock';
 import { BrandIcon } from './BrandIcon';
 
 // Grid layout configurations
@@ -81,7 +83,7 @@ interface TerminalCellProps {
 
 const TerminalCell = memo(function TerminalCell({ terminalId, index, isFocused, onFocus, onRemove, onMaximize, maximized, onHeaderPointerDown }: TerminalCellProps) {
   const { terminals } = useTerminalStore();
-  const { swapGridPositions, replaceInGrid, removeFromGrid } = useAppStore();
+  const { swapGridPositions, replaceInGrid } = useAppStore();
   const pinnedTabIds = useAppStore((s) => s.pinnedTabIds);
   const isPinned = pinnedTabIds.includes(terminalId);
   const [dropOver, setDropOver] = useState(false);
@@ -96,9 +98,9 @@ const TerminalCell = memo(function TerminalCell({ terminalId, index, isFocused, 
   // as "Terminal not found".
   useEffect(() => {
     if (!terminal && terminals.size > 0) {
-      removeFromGrid(terminalId);
+      onRemove();
     }
-  }, [terminal, terminals.size, terminalId, removeFromGrid]);
+  }, [terminal, terminals.size, onRemove]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     if (isTerminalDrag(e)) {
@@ -176,6 +178,7 @@ const TerminalCell = memo(function TerminalCell({ terminalId, index, isFocused, 
 
       {/* Cell Header - sketch: pin + name + status dot + maximize + close */}
       <div
+        data-pane-header
         onPointerDown={onHeaderPointerDown}
         onDoubleClick={(e) => {
           if (e.target instanceof Element && e.target.closest('button')) return;
@@ -446,15 +449,64 @@ function FreeformPane({ rect, zIndex, containerRef, ...cell }: FreeformPaneProps
     handle.addEventListener('pointercancel', onEnd);
   }, [containerRef, onFocus, setGridFreeRect, terminalId]);
 
+  /**
+   * Dragging by the title. The pane follows the pointer, and the outline shows
+   * where it will land if released: the window edge docks it, another pane swaps
+   * with it, anywhere else it stays put. Alt forces a free drop, so panes can
+   * still be stacked on purpose.
+   */
   const handleHeaderPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (maximized || (e.target instanceof Element && e.target.closest('button'))) return;
-    startGesture(e, (dx, dy, others, size) => moveRect(rect, dx, dy, others, size), 'live');
-  }, [maximized, rect, startGesture]);
+    if (maximized || e.button !== 0 || (e.target instanceof Element && e.target.closest('button'))) return;
+    const box = containerRef.current?.getBoundingClientRect();
+    if (!box || box.width === 0 || box.height === 0) return;
+    e.preventDefault();
+    onFocus();
+
+    const start = rect;
+    const { gridFreeRects, gridTerminalIds } = useAppStore.getState();
+    const others = gridTerminalIds
+      .filter((id) => id !== terminalId && gridFreeRects[id])
+      .map((id) => ({ id, rect: gridFreeRects[id] }));
+    const size = { width: box.width, height: box.height };
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const handle = e.currentTarget;
+    let moved = false;
+    let action: DragAction = null;
+    handle.setPointerCapture(e.pointerId);
+
+    const onMove = (ev: PointerEvent) => {
+      moved = true;
+      const next = moveRect(start, (ev.clientX - startX) / box.width, (ev.clientY - startY) / box.height, others.map((o) => o.rect), size);
+      setGridFreeRect(terminalId, next);
+      action = pickDragAction(ev.clientX - box.left, ev.clientY - box.top, size, others, ev.altKey);
+      if (action?.type === 'dock') setGhost(dockRect(action.zone));
+      else if (action?.type === 'swap') {
+        const targetId = action.id;
+        setGhost(others.find((o) => o.id === targetId)?.rect ?? null);
+      } else setGhost(null);
+    };
+    const onEnd = () => {
+      handle.removeEventListener('pointermove', onMove);
+      handle.removeEventListener('pointerup', onEnd);
+      handle.removeEventListener('pointercancel', onEnd);
+      setGhost(null);
+      if (!moved) return;
+      const app = useAppStore.getState();
+      const current = { ...app.gridFreeRects, [terminalId]: start };
+      if (action?.type === 'dock') app.setGridFreeRects(applyDock(terminalId, action.zone, current));
+      else if (action?.type === 'swap') app.setGridFreeRects(swapRects(current, terminalId, action.id));
+      rememberFreeLayout();
+    };
+    handle.addEventListener('pointermove', onMove);
+    handle.addEventListener('pointerup', onEnd);
+    handle.addEventListener('pointercancel', onEnd);
+  }, [containerRef, maximized, onFocus, rect, setGridFreeRect, terminalId]);
 
   return (
     <>
       <div
-        className="absolute p-0.5"
+        className="absolute p-px"
         style={maximized ? { ...rectStyle(FULL_RECT), zIndex: MAXIMIZED_Z } : { ...rectStyle(rect), zIndex }}
       >
         <TerminalCell {...cell} onHeaderPointerDown={handleHeaderPointerDown} />
@@ -474,6 +526,7 @@ function FreeformPane({ rect, zIndex, containerRef, ...cell }: FreeformPaneProps
       {ghost && (
         <div
           aria-hidden
+          data-testid="pane-ghost"
           className="absolute pointer-events-none rounded-md border-2 border-accent-primary bg-accent-primary/10"
           style={{ ...rectStyle(ghost), zIndex: 1000 }}
         />
@@ -501,6 +554,11 @@ export function TerminalGrid() {
   // Most recently focused last, so the pane you click comes to the front.
   const [paneOrder, setPaneOrder] = useState<string[]>([]);
   const [maximizedId, setMaximizedId] = useState<string | null>(null);
+  const [toolbarSlot, setToolbarSlot] = useState<Element | null>(null);
+  useEffect(() => {
+    setToolbarSlot(document.querySelector('[data-toolbar-slot]'));
+  }, []);
+  const placeToolbar = (node: ReactNode) => (toolbarSlot ? createPortal(node, toolbarSlot) : node);
   const { terminals, setActiveTerminal } = useTerminalStore();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -601,6 +659,24 @@ export function TerminalGrid() {
     setGridFreeRects(next);
   }, [gridFreeform, gridTerminalIds, gridFreeRects, setGridFreeRects, terminals]);
 
+  const handleRemove = useCallback((terminalId: string) => {
+    removeFromGrid(terminalId);
+    const app = useAppStore.getState();
+    if (!app.gridFreeform) return;
+    const remaining: Record<string, PaneRect> = {};
+    for (const id of app.gridTerminalIds) if (app.gridFreeRects[id]) remaining[id] = app.gridFreeRects[id];
+    app.setGridFreeRects(fillGaps(remaining));
+    rememberFreeLayout();
+  }, [removeFromGrid]);
+
+  const handleFill = useCallback(() => {
+    const app = useAppStore.getState();
+    const current: Record<string, PaneRect> = {};
+    for (const id of app.gridTerminalIds) if (app.gridFreeRects[id]) current[id] = app.gridFreeRects[id];
+    app.setGridFreeRects(fillGaps(current));
+    rememberFreeLayout();
+  }, []);
+
   const handleTile = useCallback(() => {
     const tiled = tileRects(gridTerminalIds.length);
     setGridFreeRects(Object.fromEntries(gridTerminalIds.map((id, i) => [id, tiled[i]])));
@@ -632,20 +708,12 @@ export function TerminalGrid() {
 
   return (
     <div className="h-full flex flex-col">
-      {/* Grid Toolbar */}
-      <div className="flex items-center justify-between px-3 py-1.5 bg-bg-secondary border-b border-border">
-        <div className="flex items-center gap-2">
-          <Grid3X3 size={14} className="text-text-secondary" />
-          <span className="text-text-primary text-[12px] font-medium">Grid View</span>
-          <span className="text-text-tertiary text-[11px]">
-            ({gridTerminalIds.length}/8)
+      {/* Grid controls: in the title row, so they cost the terminals no height. */}
+      {placeToolbar(
+        <div data-grid-toolbar className="no-drag flex items-center gap-1 min-w-0">
+          <span className="text-text-tertiary text-[11px] tabular-nums px-1 flex-shrink-0" title="Alt+Arrows or Alt+1-8 move between terminals">
+            {gridTerminalIds.length}/8
           </span>
-          {gridTerminalIds.length > 1 && (
-            <span className="text-text-tertiary text-[11px]">· Alt+Arrows / Alt+1-8 to navigate</span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2">
           {/* Layout Selector */}
           <div className="flex items-center gap-0.5 bg-bg-primary rounded-md p-0.5">
             {LAYOUT_OPTIONS.map((option) => {
@@ -689,7 +757,18 @@ export function TerminalGrid() {
               title="Arrange all terminals evenly"
             >
               <LayoutGrid size={12} />
-              Tile
+              <span className="max-[1180px]:hidden">Tile</span>
+            </button>
+          )}
+
+          {gridFreeform && gridTerminalIds.length > 0 && (
+            <button
+              onClick={handleFill}
+              className="flex items-center gap-1 px-2 py-1 text-[11px] text-text-secondary hover:text-text-primary hover:bg-fill-hover rounded transition-colors"
+              title="Grow terminals into the empty space around them"
+            >
+              <Expand size={12} />
+              <span className="max-[1180px]:hidden">Fill</span>
             </button>
           )}
 
@@ -702,7 +781,7 @@ export function TerminalGrid() {
             title="Create a new terminal in the grid"
           >
             <Plus size={12} />
-            New Terminal
+            <span className="max-[1180px]:hidden">New Terminal</span>
           </button>
 
           {/* Add All Terminals Button */}
@@ -719,7 +798,7 @@ export function TerminalGrid() {
             }
           >
             <Layers size={12} />
-            Add All
+            <span className="max-[1180px]:hidden">Add All</span>
           </button>
 
           {/* Exit Grid Mode */}
@@ -728,14 +807,14 @@ export function TerminalGrid() {
             className="flex items-center gap-1 px-2 py-1 text-[11px] text-text-secondary hover:text-text-primary hover:bg-fill-hover rounded transition-colors"
           >
             <Minimize2 size={12} />
-            Exit Grid
+            <span className="max-[1180px]:hidden">Exit Grid</span>
           </button>
-        </div>
-      </div>
+        </div>,
+      )}
 
       {/* Grid Container */}
       {gridFreeform ? (
-        <div ref={containerRef} className="relative flex-1 m-1 overflow-hidden">
+        <div ref={containerRef} data-free-container className="relative isolate flex-1 m-0.5 overflow-hidden">
           {gridTerminalIds.map((terminalId, index) => {
             const rect = gridFreeRects[terminalId];
             if (!rect) return null;
@@ -750,7 +829,7 @@ export function TerminalGrid() {
                 isFocused={gridFocusedIndex === index}
                 maximized={maximizedId === terminalId}
                 onFocus={() => setGridFocusedIndex(index)}
-                onRemove={() => removeFromGrid(terminalId)}
+                onRemove={() => handleRemove(terminalId)}
                 onMaximize={() => handleMaximize(terminalId, index)}
               />
             );
@@ -759,12 +838,12 @@ export function TerminalGrid() {
       ) : (
       <div
         ref={containerRef}
-        className="relative flex-1 p-1 overflow-hidden"
+        className="relative isolate flex-1 p-0.5 overflow-hidden"
         style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${config.cols}, 1fr)`,
           gridTemplateRows: `repeat(${config.rows}, 1fr)`,
-          gap: '4px',
+          gap: '2px',
         }}
       >
         <AnimatePresence mode="popLayout">
@@ -777,7 +856,7 @@ export function TerminalGrid() {
               isFocused={gridFocusedIndex === index}
               maximized={maximizedId === terminalId}
               onFocus={() => setGridFocusedIndex(index)}
-              onRemove={() => removeFromGrid(terminalId)}
+              onRemove={() => handleRemove(terminalId)}
               onMaximize={() => handleMaximize(terminalId, index)}
             />
           ))}

@@ -105,7 +105,7 @@ export function TerminalStatusBar({ terminalId }: TerminalStatusBarProps) {
   const isRunning = status === 'Running';
 
   return (
-    <div className="flex items-center justify-between h-8 px-3 border-t border-seam text-[11.5px] select-none flex-shrink-0">
+    <div className="terminal-status-bar flex items-center justify-between h-8 px-3 border-t border-seam text-[11.5px] select-none flex-shrink-0">
       {/* Left: session vitals - duration · model · effort · folder */}
       <div className="flex items-center gap-3 min-w-0">
         <Tooltip label="Session duration" side="top">

@@ -241,6 +241,24 @@ pub async fn write_paste(
 }
 
 #[command]
+pub async fn write_image_paste(
+    state: State<'_, AppState>,
+    terminal_id: String,
+    data_base64: String,
+    mime: String,
+) -> Result<crate::pastes::PasteEntry, String> {
+    wrap_cmd("write_image_paste", async move {
+        use base64::Engine;
+        let cwd = terminal_cwd(&state, &terminal_id).await?;
+        let bytes = base64::engine::general_purpose::STANDARD
+            .decode(data_base64.as_bytes())
+            .map_err(|e| error_reporter::user_err(format!("Could not read the pasted image: {}", e)))?;
+        crate::pastes::write_image_paste(&cwd, &bytes, &mime).map_err(error_reporter::user_err)
+    })
+    .await
+}
+
+#[command]
 pub async fn list_pastes(
     state: State<'_, AppState>,
     terminal_id: String,

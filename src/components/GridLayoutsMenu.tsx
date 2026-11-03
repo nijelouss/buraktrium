@@ -1,28 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Bookmark, Trash2 } from 'lucide-react';
 import { useAppStore } from '../store/appStore';
-import { useTerminalStore, type TerminalInstance } from '../store/terminalStore';
+import { useTerminalStore } from '../store/terminalStore';
 import { toast } from '../store/toastStore';
 import { MAX_GRID_TERMINALS } from '../lib/gridEmptyCells';
-import { capturePanes, matchPanes, type OpenTerminalInfo, type SavedLayout } from '../lib/savedLayouts';
-
-export function terminalInfo(terminals: Map<string, TerminalInstance>): OpenTerminalInfo[] {
-  return Array.from(terminals.values())
-    .filter((t) => !t.scriptParentId)
-    .map((t) => ({
-      id: t.config.id,
-      cwd: t.config.working_directory ?? '',
-      agent: String(t.config.agent),
-      name: t.config.nickname || t.config.label,
-    }));
-}
-
-/** Remember the current arrangement, so it survives closing the app. */
-export function rememberFreeLayout(): void {
-  const { gridTerminalIds, gridFreeRects, setGridFreeLast } = useAppStore.getState();
-  const panes = capturePanes(gridTerminalIds, gridFreeRects, terminalInfo(useTerminalStore.getState().terminals));
-  if (panes.length > 0) setGridFreeLast(panes);
-}
+import { capturePanes, matchPanes, type SavedLayout } from '../lib/savedLayouts';
+import { rememberFreeLayout, terminalInfo } from '../lib/sessionDock';
 
 function applyLayout(layout: SavedLayout): void {
   const app = useAppStore.getState();
@@ -96,7 +79,7 @@ export function GridLayoutsMenu() {
         title="Save this arrangement or bring back a saved one"
       >
         <Bookmark size={12} />
-        Layouts
+        <span className="max-[1180px]:hidden">Layouts</span>
       </button>
       {open && (
         <div

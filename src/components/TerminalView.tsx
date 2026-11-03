@@ -17,6 +17,7 @@ import { reportInvokeFailure } from '../lib/errorReporter';
 import { openTerminalLink } from '../lib/terminalLinks';
 import { classifyPasteInput } from '../lib/pasteWarning';
 import { toBracketedPaste } from '../lib/bracketedPaste';
+import { imageFromClipboard, saveAndPasteImage } from '../lib/pasteImage';
 import { decideCtrlC } from '../lib/ctrlCAction';
 import { matchesKeyCode } from '../lib/keymap';
 import { resolveAppTheme, prefersLightScheme } from '../lib/appTheme';
@@ -303,6 +304,18 @@ export function TerminalView({ terminalId }: TerminalViewProps) {
     container.addEventListener('mousedown', swallowRightButton, true);
     container.addEventListener('mouseup', swallowRightButton, true);
 
+    // Ctrl+V with an image on the clipboard. xterm only understands text, so the
+    // image is saved to a file and its path is pasted: agent CLIs attach an image
+    // given by path. Capture phase, so xterm never sees this paste event.
+    const handleImagePaste = (e: ClipboardEvent) => {
+      const image = imageFromClipboard(e.clipboardData);
+      if (!image) return; // Plain text carries on to xterm as usual.
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      void saveAndPasteImage(terminalId, image);
+    };
+    container.addEventListener('paste', handleImagePaste, true);
+
     // Handle Ctrl+C (copy) and Ctrl+V (paste) keyboard shortcuts.
     //
     // Letter accelerators use `matchesKeyCode` (from lib/keymap.ts) so they
@@ -496,6 +509,7 @@ export function TerminalView({ terminalId }: TerminalViewProps) {
       resizeObserver.disconnect();
       terminal.textarea?.removeEventListener('blur', handleBlur);
       container.removeEventListener('mouseup', handleMouseUp);
+      container.removeEventListener('paste', handleImagePaste, true);
       container.removeEventListener('mousedown', swallowRightButton, true);
       container.removeEventListener('mouseup', swallowRightButton, true);
       // Snapshot the buffer (viewport + scrollback, with colors) before we

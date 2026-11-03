@@ -32,6 +32,8 @@ const NAV: NavItem[] = [
 export function Sidebar() {
   const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
   const toggleSidebarCollapse = useAppStore((s) => s.toggleSidebarCollapse);
+  const sidebarAutoHide = useAppStore((s) => s.sidebarAutoHide);
+  const setSidebarPeek = useAppStore((s) => s.setSidebarPeek);
   const showFileTree = useAppStore((s) => s.showFileTree);
   const nav = useAppStore((s) => s.sidebarNav);
   const setNav = useAppStore((s) => s.setSidebarNav);
@@ -119,10 +121,10 @@ export function Sidebar() {
             </Tooltip>
           );
         })}
-        <Tooltip label="Collapse Sidebar">
+        <Tooltip label={sidebarAutoHide ? 'Hide Sidebar' : 'Collapse Sidebar'}>
           <button
-            onClick={toggleSidebarCollapse}
-            aria-label="Collapse Sidebar"
+            onClick={sidebarAutoHide ? () => setSidebarPeek(false) : toggleSidebarCollapse}
+            aria-label={sidebarAutoHide ? 'Hide Sidebar' : 'Collapse Sidebar'}
             className="w-7 h-9 flex items-center justify-center rounded-lg text-text-tertiary hover:text-text-secondary hover:bg-fill-hover transition-colors flex-shrink-0"
           >
             <ChevronsLeft size={14} strokeWidth={1.75} />

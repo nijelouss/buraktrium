@@ -28,6 +28,7 @@ import { PrChip } from './PrChip';
 import { RaceGridHeader } from './RaceHeader';
 import { RaceCompareView } from './RaceCompareView';
 import { closeWithConfirm } from '../lib/closeConfirm';
+import { startSessionDrag } from '../lib/sessionDock';
 import type { SessionState } from '../lib/terminalState';
 
 function fileBasename(p: string): string {
@@ -193,8 +194,13 @@ export function TerminalTabs() {
         <div className="py-1.5 px-2.5 border-b border-seam flex items-center gap-2 min-w-0">
           {activeConfig && (
             <div
-              className={`flex items-center gap-2 min-w-0 ${activeFilePath ? 'opacity-60' : ''}`}
+              className={`flex items-center gap-2 min-w-0 cursor-grab select-none ${activeFilePath ? 'opacity-60' : ''}`}
               data-session-header
+              title="Drag to place this terminal on the screen"
+              onPointerDown={(e) => {
+                if (e.target instanceof Element && e.target.closest('button, a')) return;
+                startSessionDrag(e, activeConfig.id, null);
+              }}
             >
               {headerState !== 'idle' && showTabActivity && <StateDot state={headerState} />}
               <Tooltip label={`Agent: ${specFor(activeConfig.agent).displayName}`}>

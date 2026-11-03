@@ -82,6 +82,8 @@ interface AppState {
   gridFreeRects: Record<string, PaneRect>;
   /** The last free-form arrangement, reapplied after a restart. */
   gridFreeLast: SavedPane[];
+  /** Where a dragged session would land, in window pixels. Not persisted. */
+  dockPreview: { x: number; y: number; w: number; h: number } | null;
   savedLayouts: SavedLayout[];
   hintsOpen: boolean;
   changesOpen: boolean;
@@ -369,6 +371,7 @@ interface AppState {
   setGridFreeRect: (terminalId: string, rect: PaneRect) => void;
   setGridFreeRects: (rects: Record<string, PaneRect>) => void;
   setGridFreeLast: (panes: SavedPane[]) => void;
+  setDockPreview: (preview: AppState['dockPreview']) => void;
   setSavedLayouts: (layouts: SavedLayout[]) => void;
   toggleSidebarCollapse: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
@@ -637,6 +640,7 @@ export const useAppStore = create<AppState>()(
       gridFreeform: true,
       gridFreeRects: {},
       gridFreeLast: [],
+      dockPreview: null,
       savedLayouts: [],
       hintsOpen: false,
       changesOpen: false,
@@ -862,6 +866,7 @@ export const useAppStore = create<AppState>()(
       })),
       setGridFreeRects: (rects) => set({ gridFreeRects: rects }),
       setGridFreeLast: (panes) => set({ gridFreeLast: panes }),
+      setDockPreview: (preview) => set({ dockPreview: preview }),
       setSavedLayouts: (layouts) => set({ savedLayouts: layouts }),
       toggleSidebarCollapse: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
       setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),

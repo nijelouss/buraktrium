@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { moveRect, placeNewRect, resizeRect, tileRects } from './freeformLayout';
+import { applyDock, fillGaps, dockRect, dockZoneAt, moveRect, pickDragAction, placeNewRect, resizeRect, swapRects, tileRects } from './freeformLayout';
 
 const SIZE = { width: 1000, height: 800 };
 
@@ -79,5 +79,106 @@ describe('resizeRect', () => {
   it('snaps the dragged edge to the container', () => {
     const r = resizeRect(start, { right: true }, 0.395, 0, [], SIZE);
     expect(r.x + r.w).toBe(1);
+  });
+});
+
+describe('dockZoneAt', () => {
+  it('finds edges and corners, and nothing in the middle', () => {
+    expect(dockZoneAt(990, 400, SIZE)).toBe('right');
+    expect(dockZoneAt(5, 400, SIZE)).toBe('left');
+    expect(dockZoneAt(500, 5, SIZE)).toBe('top');
+    expect(dockZoneAt(500, 795, SIZE)).toBe('bottom');
+    expect(dockZoneAt(5, 5, SIZE)).toBe('top-left');
+    expect(dockZoneAt(995, 795, SIZE)).toBe('bottom-right');
+    expect(dockZoneAt(500, 400, SIZE)).toBeNull();
+  });
+});
+
+describe('pickDragAction', () => {
+  const others = [{ id: 'b', rect: { x: 0.5, y: 0, w: 0.5, h: 1 } }];
+
+  it('prefers the window edge over a pane under the pointer', () => {
+    expect(pickDragAction(995, 400, SIZE, others, false)).toEqual({ type: 'dock', zone: 'right' });
+  });
+
+  it('swaps when dropped on another pane', () => {
+    expect(pickDragAction(700, 400, SIZE, others, false)).toEqual({ type: 'swap', id: 'b' });
+  });
+
+  it('does nothing over empty space', () => {
+    expect(pickDragAction(200, 400, SIZE, others, false)).toBeNull();
+  });
+
+  it('Alt always means a free drop', () => {
+    expect(pickDragAction(995, 400, SIZE, others, true)).toBeNull();
+    expect(pickDragAction(700, 400, SIZE, others, true)).toBeNull();
+  });
+});
+
+describe('swapRects', () => {
+  it('exchanges exactly two panes', () => {
+    const a = { x: 0, y: 0, w: 0.5, h: 1 };
+    const b = { x: 0.5, y: 0, w: 0.5, h: 1 };
+    const c = { x: 0.2, y: 0.2, w: 0.1, h: 0.1 };
+    expect(swapRects({ a, b, c }, 'a', 'b')).toEqual({ a: b, b: a, c });
+  });
+});
+
+describe('applyDock', () => {
+  const left = dockRect('left');
+  const right = dockRect('right');
+
+  it('moving left to right trades places with the pane there', () => {
+    expect(applyDock('a', 'right', { a: left, b: right })).toEqual({ a: right, b: left });
+  });
+
+  it('a pane that was full screen sends the other to the opposite side', () => {
+    const full = { x: 0, y: 0, w: 1, h: 1 };
+    expect(applyDock('a', 'right', { a: full, b: right })).toEqual({ a: right, b: left });
+  });
+
+  it('a full-screen pane makes way for one docked beside it', () => {
+    const full = { x: 0, y: 0, w: 1, h: 1 };
+    expect(applyDock('a', 'right', { a: right, b: full })).toEqual({ a: right, b: left });
+  });
+
+  it('leaves panes the docked one does not cover', () => {
+    const small = { x: 0, y: 0, w: 0.2, h: 0.2 };
+    expect(applyDock('a', 'right', { a: { x: 0.3, y: 0.3, w: 0.2, h: 0.2 }, b: small })).toEqual({ a: right, b: small });
+  });
+});
+
+describe('fillGaps', () => {
+  const area = (rects: Record<string, { w: number; h: number }>) =>
+    Object.values(rects).reduce((sum, r) => sum + r.w * r.h, 0);
+
+  it('a lone pane takes the whole area', () => {
+    expect(fillGaps({ a: { x: 0.2, y: 0.2, w: 0.3, h: 0.3 } })).toEqual({ a: { x: 0, y: 0, w: 1, h: 1 } });
+  });
+
+  it('closing one of three leaves no empty space', () => {
+    const rest = { a: { x: 0, y: 0, w: 0.5, h: 0.5 }, c: { x: 0, y: 0.5, w: 1, h: 0.5 } };
+    const filled = fillGaps(rest);
+    expect(area(filled)).toBeCloseTo(1);
+    expect(filled.a).toEqual({ x: 0, y: 0, w: 1, h: 0.5 });
+  });
+
+  it('side-by-side panes share the height and keep their border', () => {
+    const filled = fillGaps({ a: { x: 0, y: 0.1, w: 0.5, h: 0.5 }, b: { x: 0.5, y: 0.1, w: 0.5, h: 0.5 } });
+    expect(filled.a).toEqual({ x: 0, y: 0, w: 0.5, h: 1 });
+    expect(filled.b).toEqual({ x: 0.5, y: 0, w: 0.5, h: 1 });
+  });
+
+  it('does not grow panes into each other', () => {
+    const filled = fillGaps({ a: { x: 0.1, y: 0.1, w: 0.2, h: 0.2 }, b: { x: 0.6, y: 0.1, w: 0.2, h: 0.2 } });
+    expect(filled.a.x + filled.a.w).toBeLessThanOrEqual(filled.b.x);
+  });
+
+  it('leaves panes stacked on purpose where they are', () => {
+    const a = { x: 0.1, y: 0.1, w: 0.5, h: 0.5 };
+    const b = { x: 0.3, y: 0.3, w: 0.5, h: 0.5 };
+    const filled = fillGaps({ a, b });
+    expect(filled.a.x).toBeCloseTo(a.x);
+    expect(filled.a.w).toBeCloseTo(a.w);
   });
 });

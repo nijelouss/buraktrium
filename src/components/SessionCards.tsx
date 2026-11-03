@@ -5,6 +5,7 @@ import { useTerminalStore } from '../store/terminalStore';
 import { toast } from '../store/toastStore';
 import { reportInvokeFailure } from '../lib/errorReporter';
 import { createDetachedWindow } from '../lib/tabTransfer';
+import { startSessionDrag } from '../lib/sessionDock';
 import { orderTabsPinnedFirst } from '../lib/pinnedTabOrder';
 import { idsToCloseForOthers, idsToCloseForAllButPinned } from '../lib/closeTabActions';
 import { BrandIcon } from './BrandIcon';
@@ -278,6 +279,10 @@ export function SessionCards() {
             aria-label={name}
             aria-description={t.sessionContext ? contextTooltip(name, t.sessionContext) : undefined}
             drag={renamingId !== id}
+            onPointerDown={(e) => {
+              // Reordering stays as it was; leaving the sidebar turns it into a dock.
+              if (renamingId !== id) startSessionDrag(e, id, e.currentTarget.parentElement);
+            }}
             onClick={() => { useSessionAttentionStore.getState().acknowledge(id); setActiveTerminal(id); }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); useSessionAttentionStore.getState().acknowledge(id); setActiveTerminal(id); }

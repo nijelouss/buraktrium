@@ -25,16 +25,16 @@ export function SessionStrip({ onExpand }: { onExpand: () => void }) {
   return (
     <div
       data-testid="session-strip"
-      className="no-drag absolute left-0.5 top-1/2 -translate-y-1/2 z-[41] w-[18px] max-h-[80%] flex flex-col items-center gap-1 py-1 rounded-md bg-elevation-2 ring-1 ring-seam overflow-y-auto"
+      className="no-drag absolute left-px top-1/2 -translate-y-1/2 z-[41] w-[14px] max-h-[80%] flex flex-col items-center gap-1 py-1 rounded-md bg-elevation-2 ring-1 ring-seam overflow-y-auto"
     >
       <button
         type="button"
         onClick={onExpand}
         aria-label="Show sidebar"
         title="Show sidebar (Ctrl+Shift+B)"
-        className="w-4 h-5 flex-shrink-0 flex items-center justify-center rounded text-text-tertiary hover:text-text-primary hover:bg-fill-hover transition-colors"
+        className="w-3.5 h-5 flex-shrink-0 flex items-center justify-center rounded text-text-tertiary hover:text-text-primary hover:bg-fill-hover transition-colors"
       >
-        <ChevronRight size={12} />
+        <ChevronRight size={11} />
       </button>
       {sessions.map((t) => {
         const id = t.config.id;
@@ -51,7 +51,7 @@ export function SessionStrip({ onExpand }: { onExpand: () => void }) {
             aria-label={label}
             title={label}
             aria-current={id === activeTerminalId ? 'true' : undefined}
-            className={`w-4 h-4 flex-shrink-0 flex items-center justify-center rounded-full hover:bg-fill-hover transition-colors ${
+            className={`w-3.5 h-3.5 flex-shrink-0 flex items-center justify-center rounded-full hover:bg-fill-hover transition-colors ${
               id === activeTerminalId ? 'ring-1 ring-accent-primary' : ''
             }`}
           >

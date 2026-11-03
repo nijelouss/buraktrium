@@ -371,6 +371,7 @@ fn main() {
             commands::report_error,
             commands::set_error_reporting_enabled,
             commands::write_paste,
+            commands::write_image_paste,
             commands::list_pastes,
             commands::read_paste,
             commands::delete_paste,

@@ -313,6 +313,9 @@ export function TitleBar() {
         </div>
       </div>
 
+      {/* Filled by the grid, so its controls need no row of their own. */}
+      <div data-toolbar-slot className="flex-1 min-w-0 flex justify-center" />
+
       {/* Trailing: tools capsule, caption buttons. */}
       <div className="flex items-center gap-1.5 no-drag flex-shrink-0">
         <div className="glass-capsule h-8 px-0.5">

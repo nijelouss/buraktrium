@@ -34,6 +34,8 @@ import { PromptEditorDrawer } from './components/PromptEditorDrawer';
 import { CommandPalette } from './components/CommandPalette';
 import { SetupWizard } from './components/SetupWizard';
 import { AutoHideSidebar, SidebarPinButton } from './components/AutoHideSidebar';
+import { useWindowMaximized } from './hooks/useWindowMaximized';
+import { DockPreviewOverlay } from './components/DockPreviewOverlay';
 import { WhatsNewModal } from './components/WhatsNewModal';
 import { LoginModal } from './components/LoginModal';
 import { ClaudeConfigModal } from './components/ClaudeConfigModal';
@@ -148,6 +150,7 @@ interface SystemStatus {
  */
 function App() {
   useSessionContext();
+  useWindowMaximized();
   const newTaskModalOpen = useAppStore((s) => s.newTaskModalOpen);
   const newRaceModalOpen = useAppStore((s) => s.newRaceModalOpen);
   const decideRaceId = useAppStore((s) => s.decideRaceId);
@@ -1015,7 +1018,7 @@ function App() {
       // opaque `--canvas` fill so every corner gets an equal, visible edge
       // in dark and light themes. See #60.
       className="app-root h-screen w-screen flex flex-col overflow-hidden rounded-[var(--radius-window)]"
-      style={{ boxShadow: 'inset 0 0 0 1px var(--seam-strong)' }}
+      style={{ boxShadow: 'var(--window-edge-shadow)' }}
     >
       {/* Launch splash - logo reveal video + loading bar, main window only. */}
       <AnimatePresence>
@@ -1096,7 +1099,7 @@ function App() {
             )}
 
             <div className="relative flex-1 flex gap-[var(--inset-window)] min-w-0">
-              <main className="flex-1 flex flex-col overflow-hidden rounded-[var(--radius-card)] bg-elevation-0 shadow-elevation-3 ring-1 ring-inset ring-seam min-w-0">
+              <main data-dock-root className="flex-1 flex flex-col overflow-hidden rounded-[var(--radius-card)] bg-elevation-0 shadow-elevation-3 ring-1 ring-inset ring-seam min-w-0">
                 {/* Reserved toolbar zone; the floating capsules sit on it and
                     content fades out beneath it (scroll-edge effect). */}
                 <div className="toolbar-edge h-[var(--h-toolbar)] flex-shrink-0" aria-hidden />
@@ -1129,6 +1132,7 @@ function App() {
           </div>
 
           {showStatusBar && <StatusBar />}
+          <DockPreviewOverlay />
 
           <AnimatePresence>
             {settingsOpen && <SettingsWindow />}

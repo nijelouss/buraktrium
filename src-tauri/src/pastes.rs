@@ -132,6 +132,54 @@ pub fn write_paste(
     })
 }
 
+/// Largest image accepted from the clipboard. Well above a 4K screenshot, and
+/// bounded because the data arrives over IPC as one base64 string.
+const MAX_IMAGE_PASTE_BYTES: usize = 30 * 1024 * 1024;
+
+fn image_extension(mime: &str) -> Option<&'static str> {
+    match mime {
+        "image/png" => Some("png"),
+        "image/jpeg" => Some("jpg"),
+        "image/webp" => Some("webp"),
+        "image/gif" => Some("gif"),
+        "image/bmp" => Some("bmp"),
+        _ => None,
+    }
+}
+
+/// Save a pasted image next to the text pastes (same gitignored folder) so an
+/// agent CLI can read it by path.
+pub fn write_image_paste(cwd: &Path, bytes: &[u8], mime: &str) -> Result<PasteEntry, String> {
+    if !cwd.exists() {
+        return Err(format!("Working directory {} no longer exists", cwd.display()));
+    }
+    if bytes.is_empty() {
+        return Err("The pasted image is empty".into());
+    }
+    if bytes.len() > MAX_IMAGE_PASTE_BYTES {
+        return Err(format!(
+            "The pasted image is too large ({} MB, max {} MB)",
+            bytes.len() / (1024 * 1024),
+            MAX_IMAGE_PASTE_BYTES / (1024 * 1024)
+        ));
+    }
+    let ext = image_extension(mime).ok_or_else(|| format!("Unsupported image type: {}", mime))?;
+    ensure_dir_with_gitignore(cwd)?;
+    let dir = pastes_dir(cwd);
+    let base = chrono::Local::now().format("image-%Y-%m-%d-%H%M%S").to_string();
+    let file_name = next_available_name(&dir, &base, ext);
+    let abs_path = dir.join(&file_name);
+    fs::write(&abs_path, bytes).map_err(|e| e.to_string())?;
+    Ok(PasteEntry {
+        file_name: file_name.clone(),
+        relative_path: format!("{}/{}", PASTES_SUBDIR, file_name),
+        absolute_path: abs_path.to_string_lossy().to_string(),
+        size_bytes: bytes.len() as u64,
+        created_at: chrono::Utc::now().to_rfc3339(),
+        detected_kind: "image".to_string(),
+    })
+}
+
 pub fn list_pastes(cwd: &Path) -> Result<Vec<PasteEntry>, String> {
     let dir = pastes_dir(cwd);
     if !dir.exists() {
@@ -216,6 +264,39 @@ pub fn purge_pastes(cwd: &Path) -> Result<(), String> {
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod image_paste_tests {
+    use super::*;
+
+    #[test]
+    fn saves_bytes_unchanged_in_the_gitignored_folder() {
+        let dir = tempfile::tempdir().unwrap();
+        let bytes = [0x89u8, 0x50, 0x4e, 0x47, 0x00, 0xff];
+        let entry = write_image_paste(dir.path(), &bytes, "image/png").unwrap();
+        assert!(entry.file_name.ends_with(".png"));
+        assert_eq!(fs::read(&entry.absolute_path).unwrap(), bytes);
+        assert!(dir.path().join(".claudeterminal/.gitignore").exists());
+    }
+
+    #[test]
+    fn two_pastes_in_one_second_do_not_overwrite() {
+        let dir = tempfile::tempdir().unwrap();
+        let a = write_image_paste(dir.path(), b"a", "image/png").unwrap();
+        let b = write_image_paste(dir.path(), b"b", "image/png").unwrap();
+        assert_ne!(a.absolute_path, b.absolute_path);
+        assert_eq!(fs::read(&a.absolute_path).unwrap(), b"a");
+    }
+
+    #[test]
+    fn rejects_unknown_types_empty_and_oversized() {
+        let dir = tempfile::tempdir().unwrap();
+        assert!(write_image_paste(dir.path(), b"x", "image/svg+xml").is_err());
+        assert!(write_image_paste(dir.path(), b"", "image/png").is_err());
+        let big = vec![0u8; MAX_IMAGE_PASTE_BYTES + 1];
+        assert!(write_image_paste(dir.path(), &big, "image/png").is_err());
+    }
 }
 
 #[cfg(test)]
