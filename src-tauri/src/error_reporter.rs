@@ -209,7 +209,9 @@ use std::sync::Mutex;
 use std::time::{Duration, Instant};
 use serde::Serialize;
 
-const WORKER_URL: &str = "https://ct-analytics.claude-terminal.workers.dev";
+// Independent build: nothing is ever sent. `.invalid` can never resolve (RFC 2606).
+const WORKER_URL: &str = "https://disabled.invalid";
+const SENDING_DISABLED: bool = true;
 const SEND_TIMEOUT: Duration = Duration::from_secs(5);
 const MESSAGE_MAX: usize = 2048;
 const STACK_MAX: usize = 8192;
@@ -288,7 +290,7 @@ fn write_enabled_flag(dir: &std::path::Path, enabled: bool) -> std::io::Result<(
 }
 
 fn flag_dir() -> Option<std::path::PathBuf> {
-    directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+    directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
         .map(|d| d.data_dir().to_path_buf())
 }
 
@@ -354,7 +356,7 @@ pub async fn report(
     message: String,
     stack: Option<String>,
 ) {
-    if !is_enabled() {
+    if SENDING_DISABLED || !is_enabled() {
         return;
     }
     // Debug builds run only on the developer's machine (`npm run tauri dev`);
@@ -437,7 +439,7 @@ pub fn report_blocking(
     stack: Option<String>,
 ) {
     // Skip the thread machinery when report() would drop the event anyway.
-    if !is_enabled() || REPORTER.get().is_none() {
+    if SENDING_DISABLED || !is_enabled() || REPORTER.get().is_none() {
         return;
     }
     let fut = report(source, kind, message, stack);
@@ -485,7 +487,7 @@ where
 /// otherwise onto a short-lived thread. Use `report_blocking` instead when the
 /// process is about to exit and the send must be given a chance to finish.
 pub fn report_bg(kind: &'static str, message: String) {
-    if !is_enabled() || REPORTER.get().is_none() {
+    if SENDING_DISABLED || !is_enabled() || REPORTER.get().is_none() {
         return;
     }
     let fut = report(ErrorSource::RustCommand, Some(kind.to_string()), message, None);

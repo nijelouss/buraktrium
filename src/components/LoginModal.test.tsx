@@ -30,7 +30,7 @@ afterEach(() => cleanup());
 describe('LoginModal', () => {
   it('renders sign-in options', () => {
     render(<LoginModal onClose={() => {}} />);
-    expect(screen.getByRole('heading', { name: /sign in to agentrium/i })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /sign in to buraktrium/i })).toBeTruthy();
     expect(screen.getByRole('button', { name: /sign in with google/i })).toBeTruthy();
     expect(screen.getByRole('button', { name: /continue as guest/i })).toBeTruthy();
   });

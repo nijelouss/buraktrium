@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 
-const API_BASE: &str = "https://agentrium-api.vercel.app";
+const API_BASE: &str = "https://disabled.invalid";
 
 #[derive(Debug, Serialize)]
 pub struct PullRequest {

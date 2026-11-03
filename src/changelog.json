@@ -40,7 +40,7 @@
       { "title": "Fix bugs & performance" },
       {
         "title": "Built-in browser",
-        "description": "Browse the web inside Agentrium with tabs, bookmarks and history, and split it beside a terminal."
+        "description": "Browse the web inside Buraktrium with tabs, bookmarks and history, and split it beside a terminal."
       }
     ]
   },
@@ -81,7 +81,7 @@
       { "title": "Fix bugs & performance" },
       {
         "title": "Join us on Discord",
-        "description": "A new Discord button in the bottom-right status bar opens the Agentrium community server, where you can ask questions, report bugs, and hear about new releases first."
+        "description": "A new Discord button in the bottom-right status bar opens the Buraktrium community server, where you can ask questions, report bugs, and hear about new releases first."
       }
     ]
   },
@@ -101,7 +101,7 @@
     "date": "2026-10-18",
     "features": [
       { "title": "Fix bugs & performance" },
-      { "title": "Confirm before quitting", "description": "Closing the main window now asks before quitting Agentrium and shows how many sessions will close, so a stray click no longer ends your work." },
+      { "title": "Confirm before quitting", "description": "Closing the main window now asks before quitting Buraktrium and shows how many sessions will close, so a stray click no longer ends your work." },
       { "title": "Clearer session close", "description": "The session close button in the header is now labelled 'Close session' and set apart from the window controls, so it is no longer mistaken for quitting the app." },
       { "title": "Tidier header", "description": "The app name now sits beside the logo, and the session name, description and repo in the header are separated by thin dividers." }
     ]
@@ -111,7 +111,7 @@
     "date": "2026-10-17",
     "features": [
       { "title": "Fix bugs & performance" },
-      { "title": "Lighter background sync", "description": "Sync now checks for changes from your other devices every 30 minutes while Agentrium is in front, and right away when you switch back to it. A minimized or background window no longer polls at all." }
+      { "title": "Lighter background sync", "description": "Sync now checks for changes from your other devices every 30 minutes while Buraktrium is in front, and right away when you switch back to it. A minimized or background window no longer polls at all." }
     ]
   },
   {
@@ -181,10 +181,10 @@
     "features": [
       { "title": "Fix bugs & performance" },
       { "title": "New Task: one worktree per agent", "description": "Start a task from the sidebar, the command palette or Ctrl+Shift+T. Each task gets its own branch and git worktree, so agents running in parallel never touch each other's files. Gitignored setup files such as .env are copied in for you." },
-      { "title": "Finish a task", "description": "When you close a task session, merge it back by fast-forward or squash, keep the branch, or discard it. Agentrium refuses to merge into a branch with uncommitted changes and offers to commit the task's own changes first." },
+      { "title": "Finish a task", "description": "When you close a task session, merge it back by fast-forward or squash, keep the branch, or discard it. Buraktrium refuses to merge into a branch with uncommitted changes and offers to commit the task's own changes first." },
       { "title": "Task badges and filter", "description": "Sessions show the task branch and how far it is ahead of or behind its base. The Tasks filter in the Sessions list shows only task sessions." },
       { "title": "Worktree isolation setting", "description": "Settings, Git lets new sessions in a repository ask, always or never create their own worktree, choose the worktree folder, and clean up task worktrees that no session uses." },
-      { "title": "Create pull requests", "description": "Go from commit to push to pull request without leaving Agentrium. Create PR appears after a push, in the Git panel toolbar, in the session menu and in the command palette. The title and description are prefilled from the task, the changed files and the commits, and an agent can draft them for you. Agentrium uses your signed-in gh or glab CLI and otherwise opens the create page in your browser. It never stores a token." },
+      { "title": "Create pull requests", "description": "Go from commit to push to pull request without leaving Buraktrium. Create PR appears after a push, in the Git panel toolbar, in the session menu and in the command palette. The title and description are prefilled from the task, the changed files and the commits, and an agent can draft them for you. Buraktrium uses your signed-in gh or glab CLI and otherwise opens the create page in your browser. It never stores a token." },
       { "title": "Pull request status on tabs", "description": "Sessions show their pull request number, whether it is open, draft, merged or closed, and a CI status dot. When CI fails or the pull request is merged, the attention inbox and a desktop notification tell you, and one click sends the failing checks to the agent." }
     ]
   },
@@ -265,15 +265,15 @@
     "version": "1.34.1",
     "date": "2026-09-15",
     "features": [
-      { "title": "Mouse clicks work again in Claude Code", "description": "Agentrium no longer forces Claude Code's classic renderer, so clicking inside the terminal (menus, links, selection) behaves correctly again." },
-      { "title": "Stay signed in when offline", "description": "If the sync server is unreachable when Agentrium starts, you stay signed in and the sync chip shows Offline instead of dropping you back to guest mode." }
+      { "title": "Mouse clicks work again in Claude Code", "description": "Buraktrium no longer forces Claude Code's classic renderer, so clicking inside the terminal (menus, links, selection) behaves correctly again." },
+      { "title": "Stay signed in when offline", "description": "If the sync server is unreachable when Buraktrium starts, you stay signed in and the sync chip shows Offline instead of dropping you back to guest mode." }
     ]
   },
   {
     "version": "1.34.0",
     "date": "2026-09-14",
     "features": [
-      { "title": "Sign in to Agentrium (optional)", "description": "Sign in with Google, GitHub or email to keep your profiles, custom agents and workspaces in sync across devices. Guest mode stays exactly as it is: no account needed." },
+      { "title": "Sign in to Buraktrium (optional)", "description": "Sign in with Google, GitHub or email to keep your profiles, custom agents and workspaces in sync across devices. Guest mode stays exactly as it is: no account needed." },
       { "title": "We respect your privacy", "description": "Sign-in is optional, your terminal sessions never leave your machine, synced profile environment variables are encrypted at rest, and telemetry stays off when you turn it off." },
       { "title": "Full sync is coming in the next versions", "description": "Session restore across devices and the rest of the sync surface arrive in upcoming releases; this version syncs profiles, custom agents and workspaces." },
       { "title": "Confirmation dialogs fixed", "description": "Discarding changes, dropping stashes, deleting changelists and replacing sessions now wait for your answer in a native dialog." }
@@ -292,7 +292,7 @@
     "version": "1.33.6",
     "date": "2026-09-09",
     "features": [
-      { "title": "Add your own agents", "description": "Register any coding-agent CLI (OpenCode, Gemini CLI, Aider, Goose, Qwen Code, or a custom binary) from the agent picker or Settings > Agents. Presets fill in the binary, resume flag and the API key variable it needs; Agentrium probes your PATH live." },
+      { "title": "Add your own agents", "description": "Register any coding-agent CLI (OpenCode, Gemini CLI, Aider, Goose, Qwen Code, or a custom binary) from the agent picker or Settings > Agents. Presets fill in the binary, resume flag and the API key variable it needs; Buraktrium probes your PATH live." },
       { "title": "API keys in your OS credential store", "description": "Store Anthropic, OpenAI, Google, Cursor, OpenRouter or custom keys once. They live in Windows Credential Manager / macOS Keychain and are injected into the agent process only at launch - never in profiles, logs or telemetry. An endpoint override lets Claude Code run against Ollama or a gateway." }
     ]
   },

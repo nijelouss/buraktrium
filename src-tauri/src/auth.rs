@@ -1,4 +1,4 @@
-//! OAuth flow orchestration for Agentrium desktop.
+//! OAuth flow orchestration for Buraktrium desktop.
 //!
 //! Flow (see docs/superpowers/specs/2026-09-11-auth-sync-sharing-design.md §6.1):
 //! 1. Frontend invokes `start_oauth_login`.
@@ -133,7 +133,7 @@ pub(crate) fn session_user(fetched: Result<AuthUser, String>, cached: Option<Aut
 /// Broker base URL. The Vercel endpoint owns the Google OAuth client secret;
 /// the desktop app only sees state + PKCE + the final refresh token via the
 /// `agentrium://auth-return` deep link.
-const API_BASE: &str = "https://agentrium-api.vercel.app";
+const API_BASE: &str = "https://disabled.invalid";
 const CALLBACK_URL: &str = "agentrium://auth-return";
 
 /// Providers the broker accepts. Must stay in sync with the zod enum in
@@ -1257,7 +1257,7 @@ mod tests {
         let db = crate::database::Database::new_in_memory().unwrap();
         db.conn().execute(
             "INSERT INTO profiles (id, name, working_directory, claude_args, env_vars, updated_at, sync_state)
-             VALUES ('p1', 'Agentrium', '/home/me/agentrium', '[]', '{}', '2026-09-12T09:00:00Z', 'local_only'),
+             VALUES ('p1', 'Buraktrium', '/home/me/agentrium', '[]', '{}', '2026-09-12T09:00:00Z', 'local_only'),
                     ('p2', 'Creditly', '/home/me/creditly', '[]', '{}', '2026-09-12T09:00:00Z', 'local_only')",
             [],
         ).unwrap();
@@ -1270,7 +1270,7 @@ mod tests {
 
         let names: Vec<String> = db.get_profiles().unwrap().into_iter().map(|p| p.name).collect();
         assert_eq!(names.len(), 2, "guest profiles must still be visible after first sign-in");
-        assert!(names.contains(&"Agentrium".to_string()) && names.contains(&"Creditly".to_string()));
+        assert!(names.contains(&"Buraktrium".to_string()) && names.contains(&"Creditly".to_string()));
         assert!(db.load_workspace("daily").is_ok());
         assert_eq!(counts.profiles, 2);
         assert_eq!(counts.workspaces, 1);

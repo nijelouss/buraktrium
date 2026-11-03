@@ -34,7 +34,7 @@ type AuthState = {
 };
 
 /**
- * Auth state for Agentrium's sign-in flow (M1).
+ * Auth state for Buraktrium's sign-in flow (M1).
  *
  * Deliberately NOT persisted via zustand/middleware/persist. Access tokens
  * live only in memory here; refresh tokens live only in the OS keychain (via

@@ -75,7 +75,7 @@ function tooltipFor(
   lastPulledAt: string | null,
   lastError: string | null,
 ): string {
-  if (lastError?.includes('desktop_update_required')) return 'Update Agentrium to resume cloud sync. Local changes are preserved.';
+  if (lastError?.includes('desktop_update_required')) return 'Update Buraktrium to resume cloud sync. Local changes are preserved.';
   if (lastError?.includes('session_expired')) return 'Your sign-in expired. Sign out and sign in again to resume cloud sync. Local changes are preserved.';
   if (lastError?.includes('credential_access_canceled')) return 'Keychain access was canceled. Click to retry sync and allow access. Local changes are preserved.';
   if (lastError?.includes('email_verification_required')) return 'Sign in with Google or GitHub to verify your email and enable sync. Local changes are preserved.';

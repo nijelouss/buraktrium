@@ -447,7 +447,7 @@ export function racedAgainstTable(race: Pick<Race, 'contenders'>, winnerWorktree
   return [
     '### Raced against',
     '',
-    `Picked in an Agentrium race against ${others.join(', ') || 'no one'}.`,
+    `Picked in an Buraktrium race against ${others.join(', ') || 'no one'}.`,
     '',
     '| Contender | Time | Cost | Files | +/- | Check |',
     '|---|---|---|---|---|---|',

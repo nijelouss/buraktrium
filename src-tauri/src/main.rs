@@ -109,7 +109,7 @@ fn main() {
         // this instance's on_open_url handler automatically - we don't
         // manually re-parse argv here.
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            // A second Agentrium tried to launch. Bring our main window to the
+            // A second Buraktrium tried to launch. Bring our main window to the
             // foreground so the user sees the sign-in complete.
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.unminimize();
@@ -191,7 +191,7 @@ fn main() {
             {
                 use tauri_plugin_deep_link::DeepLinkExt;
                 // register() is idempotent; safe to call every launch during dev.
-                let _ = app.deep_link().register("agentrium");
+                let _ = app.deep_link().register("buraktrium");
 
                 let handle = app.handle().clone();
                 app.deep_link().on_open_url(move |event| {
@@ -402,7 +402,7 @@ fn main() {
             commands::sync_now,
         ])
         .on_window_event(|window, event| {
-            // Any Agentrium window counts as "in use" for sync: moving from
+            // Any Buraktrium window counts as "in use" for sync: moving from
             // main to a detached window emits main-false then detached-true.
             if let tauri::WindowEvent::Focused(focused) = event {
                 let app_state = window.state::<AppState>();

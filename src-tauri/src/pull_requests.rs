@@ -1,6 +1,6 @@
 //! "Create Pull Request" flow: commit -> push -> PR, plus PR status for tabs.
 //!
-//! Auth strategy: Agentrium never stores a forge token. It drives the user's
+//! Auth strategy: Buraktrium never stores a forge token. It drives the user's
 //! own `gh` / `glab` CLI when one is installed and signed in, and otherwise
 //! builds a compare / new-merge-request URL for the browser. Nothing here
 //! talks to the agentrium-api broker.

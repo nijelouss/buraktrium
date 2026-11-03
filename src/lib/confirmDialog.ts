@@ -19,7 +19,7 @@ export interface ConfirmOptions {
 export async function confirmAction(message: string, opts: ConfirmOptions = {}): Promise<boolean> {
   try {
     return await confirm(message, {
-      title: opts.title ?? 'Agentrium',
+      title: opts.title ?? 'Buraktrium',
       kind: opts.kind ?? 'warning',
       okLabel: opts.okLabel,
       cancelLabel: 'Cancel',

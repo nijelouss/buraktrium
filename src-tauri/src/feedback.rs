@@ -12,7 +12,7 @@ pub const MESSAGE_MAX: usize = 2000;
 /// Destination URL for the feedback endpoint, injected at build time.
 /// `None` at runtime means dev builds and unofficial installs: the command
 /// validates and then no-ops so the UI still works for local testing.
-pub const FEEDBACK_URL: Option<&str> = option_env!("AGENTRIUM_FEEDBACK_URL");
+pub const FEEDBACK_URL: Option<&str> = None;
 
 /// Wire format sent to the feedback endpoint. Kept minimal on purpose:
 /// no email, no installation id, no client-side ip - so this endpoint stays
@@ -83,7 +83,7 @@ pub fn validate(input: FeedbackInput) -> Result<ValidFeedback, String> {
 /// Path of the local dev-mode inbox: `<data_dir>/feedback-inbox.jsonl`.
 /// Returns `None` on the (unusual) systems where a data dir cannot be resolved.
 pub fn inbox_path() -> Option<std::path::PathBuf> {
-    directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+    directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
         .map(|d| d.data_dir().join("feedback-inbox.jsonl"))
 }
 

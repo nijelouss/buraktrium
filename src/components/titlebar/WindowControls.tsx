@@ -29,7 +29,7 @@ export function TrafficLights({ vertical = false }: { vertical?: boolean }) {
       <button
         onClick={requestWindowClose}
         className="w-3 h-3 rounded-full bg-[#ff5f57] hover:brightness-90 transition-all"
-        aria-label="Quit Agentrium"
+        aria-label="Quit Buraktrium"
       />
       <button
         onClick={() => appWindow.minimize()}
@@ -58,8 +58,8 @@ export function CaptionButtons() {
       <button onClick={() => appWindow.toggleMaximize()} className={`${btn} hover:bg-fill-hover`} aria-label="Maximize">
         <Square size={10} strokeWidth={1.75} />
       </button>
-      <Tooltip label="Quit Agentrium">
-        <button onClick={requestWindowClose} className={`${btn} hover:bg-[#E04545] hover:text-white`} aria-label="Quit Agentrium">
+      <Tooltip label="Quit Buraktrium">
+        <button onClick={requestWindowClose} className={`${btn} hover:bg-[#E04545] hover:text-white`} aria-label="Quit Buraktrium">
           <X size={13} strokeWidth={2} />
         </button>
       </Tooltip>
@@ -89,7 +89,7 @@ export function SidebarWindowHeader({ collapsed }: { collapsed: boolean }) {
       {isMac && <TrafficLights vertical={collapsed} />}
       <img src={appIcon} alt="" className="w-[24px] h-[24px]" draggable={false} />
       {!collapsed && (
-        <span className="text-[13px] font-semibold text-text-primary tracking-tight">Agentrium</span>
+        <span className="text-[13px] font-semibold text-text-primary tracking-tight">Buraktrium</span>
       )}
     </div>
   );

@@ -153,7 +153,7 @@ export function RaceDecideDialog() {
 
   const winnerBlock = useMemo(() => {
     if (abandon || !winnerStatus) return null;
-    if (winnerStatus === 'missing') return 'The winner\'s worktree is no longer a task managed by Agentrium.';
+    if (winnerStatus === 'missing') return 'The winner\'s worktree is no longer a task managed by Buraktrium.';
     if (winnerStatus.uncommitted.length > 0) return 'The winner has uncommitted changes. Commit them first.';
     if (action === 'pr') return winnerStatus.ahead === 0 ? 'The winner has no commits for a pull request.' : null;
     return mergeBlockReason(winnerStatus, mergeMode);

@@ -454,7 +454,7 @@ async fn run_claude(stdin_text: String) -> RunOutcome {
     use tokio::io::AsyncWriteExt;
     let mut cmd: tokio::process::Command = shell_command("claude", &CLAUDE_ARGS).into();
     // Run outside the repo so an injected instruction cannot reach project files.
-    let Some(neutral) = directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+    let Some(neutral) = directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
         .map(|d| d.data_dir().join("learn-sandbox"))
     else {
         return RunOutcome::Failed;

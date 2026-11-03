@@ -10,7 +10,7 @@ import { BrandIcon } from '../../BrandIcon';
 registerSetting({
   category: { group: 'privacy-about', page: 'about' },
   id: 'about',
-  label: 'About Agentrium',
+  label: 'About Buraktrium',
   keywords: ['version', 'about', 'github', 'license', 'agent'],
 });
 
@@ -31,11 +31,11 @@ export default function AboutPage() {
 
   return (
     <div>
-      <PageHeader title="About Agentrium" />
+      <PageHeader title="About Buraktrium" />
 
       <PageSection title="Versions">
         <div className="py-2 text-[12.5px] text-text-primary space-y-1.5">
-          <p>Agentrium <span className="font-mono text-text-secondary">v{appVersion}</span></p>
+          <p>Buraktrium <span className="font-mono text-text-secondary">v{appVersion}</span></p>
           {AGENT_SPECS.map((spec) => {
             const version = agentVersions[spec.kind] ?? null;
             return (

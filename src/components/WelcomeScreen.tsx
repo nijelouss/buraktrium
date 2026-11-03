@@ -51,7 +51,7 @@ export function WelcomeScreen() {
           draggable={false}
         />
         <motion.h1 variants={rise} className="text-[40px] font-bold text-text-primary mb-3 tracking-display leading-[1.08]">
-          Welcome to Agentrium
+          Welcome to Buraktrium
         </motion.h1>
         <motion.p variants={rise} className="text-[15px] leading-relaxed text-text-secondary mb-10 text-center max-w-[460px]">
           Run Claude Code, Codex, Cursor, and Antigravity agents side by side

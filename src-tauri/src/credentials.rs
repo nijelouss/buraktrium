@@ -7,7 +7,7 @@ use crate::config::CredentialBinding;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-pub const SERVICE_NAME: &str = "com.claudeterminal.agentrium";
+pub const SERVICE_NAME: &str = "com.buraktrium.app";
 
 /// Store key for a credential's API key value.
 pub fn key_entry(id: &str) -> String {
@@ -214,7 +214,7 @@ pub fn validate_save(
 
 /// The one place secret values are read for use. Returns env additions for
 /// the child process; never store the result. Missing values are user-state
-/// errors (the key was deleted from the OS store outside Agentrium).
+/// errors (the key was deleted from the OS store outside Buraktrium).
 pub fn resolve_for_spawn(
     store: &dyn SecretStore,
     metas: &HashMap<String, CredentialMeta>,
@@ -408,7 +408,7 @@ mod tests {
 
 // ---- Auth refresh token storage ---------------------------------------------
 
-const AUTH_SERVICE_BASE: &str = "com.claudeterminal.agentrium.auth";
+const AUTH_SERVICE_BASE: &str = "com.buraktrium.app.auth";
 const REFRESH_TOKEN_KEY: &str = "refresh_token";
 
 /// Service name used for the auth refresh token in the OS keychain.

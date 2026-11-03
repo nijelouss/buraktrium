@@ -88,8 +88,8 @@ impl Database {
         // App name is suffixed when running a side-loaded QA build so the
         // dev instance gets its own DB, isolated from any prod install.
         // See `crate::instance_suffix` for the convention.
-        let app_name = format!("ClaudeTerminal{}", crate::instance_suffix());
-        let data_dir = ProjectDirs::from("com", "claudeterminal", &app_name)
+        let app_name = format!("Buraktrium{}", crate::instance_suffix());
+        let data_dir = ProjectDirs::from("com", "buraktrium", &app_name)
             .ok_or("Failed to get project directories")?
             .data_dir()
             .to_path_buf();

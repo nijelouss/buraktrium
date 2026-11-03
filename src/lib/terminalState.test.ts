@@ -19,6 +19,16 @@ describe('completed turn signals', () => {
 });
 
 describe('classifySettled', () => {
+  it('flags the current folder trust prompt as waiting', () => {
+    const lines = [
+      'Quick safety check: Is this a project you created or one you trust?',
+      '> No, exit',
+      '  Yes, I trust this folder',
+      'Enter to confirm · Esc to cancel',
+    ];
+    expect(classifySettled(lines)).toBe('waiting');
+  });
+
   it('flags a "Do you want to proceed?" permission prompt as waiting', () => {
     const lines = [
       'Do you want to proceed?',

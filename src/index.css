@@ -282,6 +282,7 @@
   --h-tab:    32px;  /* Editor/terminal tab strip */
   --h-status: 24px;  /* Status bar */
   --w-rail:   48px;  /* Collapsed sidebar / tool-window stripe */
+  --w-session-strip: 22px; /* Column kept for the session dots while the sidebar hides */
   --w-panel:  260px; /* Expanded sidebar panel */
 
   /* Semantic colors - Apple system palette (dark), slightly softened so they
@@ -1032,6 +1033,29 @@ h2, h3 { letter-spacing: var(--track-title); line-height: 1.3; }
 
 @media (prefers-reduced-motion: reduce) {
   .session-attention-outline { animation: none; }
+}
+
+/* A grid pane waiting for the user. The rim is a layer above the pane's content:
+   an inset box-shadow would be painted underneath the header and the terminal,
+   and a ring outside would be clipped by a neighbouring pane. */
+.pane-waiting::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border: 3px solid var(--attention-input);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: pane-waiting-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pane-waiting-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pane-waiting::after { animation: none; }
 }
 
 .session-busy-dot {

@@ -11,6 +11,7 @@ import { fuzzyMatch, frecencyScore } from '../lib/paletteMatching';
 import { PALETTE_SOURCES, type PaletteItem } from '../lib/paletteSources';
 import { HighlightedText } from './palette/HighlightedText';
 import { toBracketedPaste } from '../lib/bracketedPaste';
+import { jumpToNextWaiting } from '../lib/sessionFocus';
 import {
   Terminal,
   Settings,
@@ -185,9 +186,10 @@ export function CommandPalette() {
             reportInvokeFailure('create_terminal', err);
           });
         } },
-        { label: 'Toggle Sidebar', description: 'Show or hide the sidebar', icon: PanelLeft, shortcut: 'Ctrl+B', action: () => { useAppStore.getState().toggleSidebar(); closeCommandPalette(); } },
+        { label: 'Jump to Waiting Session', description: 'Go to the next session waiting for your input', icon: Send, shortcut: 'Ctrl+Shift+J', action: () => { closeCommandPalette(); jumpToNextWaiting(); } },
+        { label: 'Toggle Sidebar', description: 'Show or hide the sidebar', icon: PanelLeft, shortcut: 'Ctrl+Shift+B', action: () => { useAppStore.getState().toggleSidebarVisible(); closeCommandPalette(); } },
         { label: 'Open Settings', description: 'Open application settings', icon: Settings, shortcut: 'Ctrl+,', action: () => { useAppStore.getState().openSettings(); closeCommandPalette(); } },
-        { label: 'Toggle Grid View', description: 'Switch between tab and grid view', icon: LayoutGrid, shortcut: 'Ctrl+G', action: () => { useAppStore.getState().toggleGridMode(); closeCommandPalette(); } },
+        { label: 'Toggle Grid View', description: 'Switch between tab and grid view', icon: LayoutGrid, shortcut: 'Ctrl+Shift+L', action: () => { useAppStore.getState().toggleGridMode(); closeCommandPalette(); } },
         { label: 'Toggle Hints Panel', description: 'Show or hide Claude Code hints', icon: Lightbulb, shortcut: 'F1', action: () => { useAppStore.getState().toggleHints(); closeCommandPalette(); } },
         { label: 'Toggle Git', description: 'Show or hide the Git panel', icon: FileCode, shortcut: 'F2', action: () => { useAppStore.getState().toggleChanges(); closeCommandPalette(); } },
         { label: 'Manage Profiles', description: 'Open profile management', icon: User, action: () => { useAppStore.getState().openProfileModal(); closeCommandPalette(); } },

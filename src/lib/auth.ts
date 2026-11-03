@@ -89,7 +89,7 @@ export async function logout(): Promise<void> {
     toast.warning(
       'Signed out on this device',
       outcome.local_error
-        ? 'Your saved sign-in could not be removed from the system keychain yet. Agentrium will finish removing it on next launch.'
+        ? 'Your saved sign-in could not be removed from the system keychain yet. Buraktrium will finish removing it on next launch.'
         : 'Server sign-out could not be confirmed. The server session may remain valid until revoked or expired.',
     );
   }

@@ -139,7 +139,7 @@ export function AutoUpdater() {
     if (status !== 'available' || !updateInfo) return;
     if (notifiedVersion === updateInfo.version) return;
     void invoke('send_notification', {
-      title: 'Agentrium update available',
+      title: 'Buraktrium update available',
       body: `Version ${updateInfo.version} is ready to install. Open the app to update.`,
     }).catch((err) => {
       // Notification failures are non-fatal - the in-app sheet still shows.
@@ -197,7 +197,7 @@ export function AutoUpdater() {
                   A new version is available
                 </h2>
                 <p className="mt-2 text-center text-[12px] font-medium tabular-nums text-text-secondary">
-                  Agentrium {updateInfo.version}
+                  Buraktrium {updateInfo.version}
                   {updateInfo.date ? ` · ${updateInfo.date}` : ''}
                 </p>
 
@@ -231,7 +231,7 @@ export function AutoUpdater() {
               <>
                 <AppMark />
                 <h2 className="mt-[19px] text-center text-[17px] font-semibold tracking-title text-text-primary">
-                  Downloading Agentrium {updateInfo.version}
+                  Downloading Buraktrium {updateInfo.version}
                 </h2>
 
                 <div
@@ -268,7 +268,7 @@ export function AutoUpdater() {
               <>
                 <AppMark badge="ready" />
                 <h2 className="mt-[19px] text-center text-[17px] font-semibold tracking-title text-text-primary">
-                  Agentrium {updateInfo.version} is ready
+                  Buraktrium {updateInfo.version} is ready
                 </h2>
                 <p className="mt-2 max-w-[320px] text-center text-[12px] leading-relaxed text-text-secondary">
                   Your terminals, layout and scrollback will be restored after the relaunch.

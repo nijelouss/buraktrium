@@ -7,6 +7,8 @@ import { addPin, removePin, togglePin } from '../lib/pinnedTabs';
 import type { AgentKind, BuiltinAgentKind } from '../lib/agents';
 import type { CredentialBinding } from '../lib/credentials';
 import type { LearnLevel } from '../lib/learn';
+import type { PaneRect } from '../lib/freeformLayout';
+import type { SavedLayout, SavedPane } from '../lib/savedLayouts';
 import type { NewTerminalIsolation } from '../lib/tasks';
 import { DEFAULT_PR_BODY_TEMPLATE, type PrMethodPreference } from '../lib/pullRequests';
 
@@ -70,6 +72,17 @@ interface AppState {
   sidebarOpen: boolean;
   sidebarCollapsed: boolean;  // widths driven by --w-rail / --w-panel tokens
   sidebarWidth: number;
+  /** The sidebar stays hidden as an overlay until asked for. */
+  sidebarAutoHide: boolean;
+  /** Whether the auto-hide overlay is currently showing. Not persisted. */
+  sidebarPeek: boolean;
+  /** Terminals are placed freely in the grid instead of in fixed cells. */
+  gridFreeform: boolean;
+  /** Free-form pane positions by terminal id. Not persisted: ids change on restart. */
+  gridFreeRects: Record<string, PaneRect>;
+  /** The last free-form arrangement, reapplied after a restart. */
+  gridFreeLast: SavedPane[];
+  savedLayouts: SavedLayout[];
   hintsOpen: boolean;
   changesOpen: boolean;
   settingsOpen: boolean;
@@ -348,6 +361,15 @@ interface AppState {
   promptEditorShortcutEnabled: boolean;
 
   toggleSidebar: () => void;
+  /** Ctrl+B: shows or hides the overlay in auto-hide mode, the sidebar otherwise. */
+  toggleSidebarVisible: () => void;
+  setSidebarAutoHide: (enabled: boolean) => void;
+  setSidebarPeek: (open: boolean) => void;
+  setGridFreeform: (enabled: boolean) => void;
+  setGridFreeRect: (terminalId: string, rect: PaneRect) => void;
+  setGridFreeRects: (rects: Record<string, PaneRect>) => void;
+  setGridFreeLast: (panes: SavedPane[]) => void;
+  setSavedLayouts: (layouts: SavedLayout[]) => void;
   toggleSidebarCollapse: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
   setSidebarWidth: (width: number) => void;
@@ -610,6 +632,12 @@ export const useAppStore = create<AppState>()(
       sidebarOpen: true,
       sidebarCollapsed: false,
       sidebarWidth: 260,
+      sidebarAutoHide: true,
+      sidebarPeek: false,
+      gridFreeform: true,
+      gridFreeRects: {},
+      gridFreeLast: [],
+      savedLayouts: [],
       hintsOpen: false,
       changesOpen: false,
       settingsOpen: false,
@@ -632,8 +660,8 @@ export const useAppStore = create<AppState>()(
       globalBusy: null,
       setGlobalBusy: (label) => set({ globalBusy: label }),
       restoreSession: true,
-      telemetryEnabled: true,
-      errorReportingEnabled: true,
+      telemetryEnabled: false,
+      errorReportingEnabled: false,
       lspEnabled: true,
       learnEnabled: true,
       learnLevel: 1,
@@ -820,6 +848,21 @@ export const useAppStore = create<AppState>()(
       promptEditorShortcutEnabled: true,
 
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+      toggleSidebarVisible: () => set((state) => (
+        state.sidebarAutoHide
+          ? { sidebarPeek: !state.sidebarPeek }
+          : { sidebarOpen: !state.sidebarOpen }
+      )),
+      // Leaving auto-hide must show the sidebar, even if it had been toggled off.
+      setSidebarAutoHide: (enabled) => set({ sidebarAutoHide: enabled, sidebarPeek: false, sidebarOpen: true }),
+      setSidebarPeek: (open) => set({ sidebarPeek: open }),
+      setGridFreeform: (enabled) => set({ gridFreeform: enabled }),
+      setGridFreeRect: (terminalId, rect) => set((state) => ({
+        gridFreeRects: { ...state.gridFreeRects, [terminalId]: rect },
+      })),
+      setGridFreeRects: (rects) => set({ gridFreeRects: rects }),
+      setGridFreeLast: (panes) => set({ gridFreeLast: panes }),
+      setSavedLayouts: (layouts) => set({ savedLayouts: layouts }),
       toggleSidebarCollapse: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
       setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
       setSidebarWidth: (width) => set({ sidebarWidth: Math.min(480, Math.max(200, width)) }),
@@ -1436,6 +1479,10 @@ export const useAppStore = create<AppState>()(
         sidebarOpen: state.sidebarOpen,
         sidebarCollapsed: state.sidebarCollapsed,
         sidebarWidth: state.sidebarWidth,
+        sidebarAutoHide: state.sidebarAutoHide,
+        gridFreeform: state.gridFreeform,
+        gridFreeLast: state.gridFreeLast,
+        savedLayouts: state.savedLayouts,
         hintsOpen: state.hintsOpen,
         changesOpen: state.changesOpen,
         defaultClaudeArgs: state.defaultClaudeArgs,

@@ -9,7 +9,7 @@ const context: SessionContext = {
   updatedAt: '2026-09-15T10:00:00Z', generated: true,
 };
 const config: TerminalConfig = {
-  id: 'test', label: 'Agentrium 1', nickname: null, profile_id: null,
+  id: 'test', label: 'Buraktrium 1', nickname: null, profile_id: null,
   working_directory: '/project', claude_args: [], env_vars: {},
   created_at: '', status: 'Running', color_tag: null, agent: 'codex',
 };
@@ -21,8 +21,8 @@ beforeEach(() => { invoke.mockReset(); seed(); });
 
 describe('session context', () => {
   it('keeps the manual or default name when generated context exists', () => {
-    expect(sessionDisplayName({ config })).toBe('Agentrium 1');
-    expect(sessionDisplayName({ config, sessionContext: context })).toBe('Agentrium 1');
+    expect(sessionDisplayName({ config })).toBe('Buraktrium 1');
+    expect(sessionDisplayName({ config, sessionContext: context })).toBe('Buraktrium 1');
     expect(sessionDisplayName({ config: { ...config, nickname: 'My task' }, sessionContext: context })).toBe('My task');
   });
 

@@ -98,7 +98,7 @@ export default function GitPage() {
       <PageSection title="Pull requests">
         <SettingRow
           label="Create pull requests"
-          description="Auto uses a signed-in gh (GitHub) or glab (GitLab) CLI and otherwise opens the create page in your browser. Agentrium never stores a token."
+          description="Auto uses a signed-in gh (GitHub) or glab (GitLab) CLI and otherwise opens the create page in your browser. Buraktrium never stores a token."
         >
           <Segmented
             value={prMethod}

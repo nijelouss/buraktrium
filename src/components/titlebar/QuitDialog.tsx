@@ -11,7 +11,7 @@ interface QuitPromptState {
   setOpen: (open: boolean) => void;
 }
 
-/** Whether the main window's "Quit Agentrium?" sheet is showing. */
+/** Whether the main window's "Quit Buraktrium?" sheet is showing. */
 export const useQuitPrompt = create<QuitPromptState>((set) => ({
   open: false,
   setOpen: (open) => set({ open }),
@@ -44,7 +44,7 @@ export function QuitDialog() {
           <div className="flex flex-col items-center px-[26px] pb-5 pt-[28px]">
             <img src={appIcon} alt="" draggable={false} className="h-14 w-14" />
             <h2 className="mt-4 text-center text-[16px] font-semibold tracking-title text-text-primary">
-              Quit Agentrium?
+              Quit Buraktrium?
             </h2>
             <p className="mt-1.5 text-center text-[12px] text-text-secondary">
               {sessionCount > 0

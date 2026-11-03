@@ -11,7 +11,7 @@ beforeEach(() => {
   vi.setSystemTime(100_000);
   mocks.refresh.mockReset().mockResolvedValue(false);
   useTerminalStore.setState({ terminals: new Map([['one', {
-    config: { id: 'one', label: 'Agentrium 1', nickname: null, profile_id: null, working_directory: '/project', claude_args: [], env_vars: {}, created_at: '', status: 'Running', color_tag: null, agent: 'codex' },
+    config: { id: 'one', label: 'Buraktrium 1', nickname: null, profile_id: null, working_directory: '/project', claude_args: [], env_vars: {}, created_at: '', status: 'Running', color_tag: null, agent: 'codex' },
     xterm: null, isWorktree: false,
   }]]) });
 });

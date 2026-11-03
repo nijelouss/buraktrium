@@ -41,7 +41,7 @@ pub fn server_spec(language: &str) -> Option<ServerSpec> {
 }
 
 pub fn lsp_data_dir() -> PathBuf {
-    directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+    directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
         .map(|d| d.data_dir().join("lsp-servers"))
         .unwrap_or_else(|| PathBuf::from("lsp-servers"))
 }

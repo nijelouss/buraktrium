@@ -31,7 +31,7 @@ describe('SyncStatusChip', () => {
   it('explains the update required to resume paused sync', () => {
     useSyncStore.setState({ status: 'paused', lastError: 'desktop_update_required', queueDepth: 2 });
     render(<SyncStatusChip />);
-    expect(screen.getByTitle('Update Agentrium to resume cloud sync. Local changes are preserved.')).toBeTruthy();
+    expect(screen.getByTitle('Update Buraktrium to resume cloud sync. Local changes are preserved.')).toBeTruthy();
     expect(screen.getByLabelText('Sync: Paused')).toBeTruthy();
     expect(screen.getByText('2')).toBeTruthy();
   });

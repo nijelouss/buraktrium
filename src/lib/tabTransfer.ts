@@ -55,7 +55,7 @@ async function openDetachedWindow(ids: string[], geometry?: WindowGeometry, posi
     // transfer receiver is registered. It never adopts URL IDs speculatively.
     win = new WebviewWindow(label, {
       url: 'index.html?mode=detached', width: 1000, height: 680,
-      minWidth: 480, minHeight: 320, decorations: false, transparent: true, title: 'Agentrium',
+      minWidth: 480, minHeight: 320, decorations: false, transparent: true, title: 'Buraktrium',
     });
     unlisteners.push(await win.once('tauri://error', e => ready.fail(new Error(`Window creation failed: ${JSON.stringify(e.payload)}`))));
     await ready.result;

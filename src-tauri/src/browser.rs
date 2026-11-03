@@ -5,7 +5,7 @@
 //! Security model:
 //! - Tabs only ever load http(s). Every navigation (typed, link click,
 //!   redirect, popup) passes `nav_decision`, which also refuses the app's own
-//!   origins so a tab can never become a second copy of Agentrium with its
+//!   origins so a tab can never become a second copy of Buraktrium with its
 //!   IPC capabilities (remote origins get no capability grant).
 //! - Popups never open a native window; they become a new tab in the UI.
 //! - Downloads are refused for now and reported to the UI.
@@ -202,7 +202,7 @@ pub enum NavDecision {
 }
 
 /// Decide whether a tab may load `url`. `app_origins` are the origins the
-/// Agentrium UI itself is served from (the Vite dev server in debug builds).
+/// Buraktrium UI itself is served from (the Vite dev server in debug builds).
 pub fn nav_decision(url: &Url, app_origins: &[String]) -> NavDecision {
     match url.scheme() {
         "http" | "https" => {}
@@ -211,11 +211,11 @@ pub fn nav_decision(url: &Url, app_origins: &[String]) -> NavDecision {
     }
     let host = url.host_str().unwrap_or("").to_ascii_lowercase();
     if host == "tauri.localhost" || host == "ipc.localhost" {
-        return NavDecision::Block("Agentrium's internal pages can't open in the browser.");
+        return NavDecision::Block("Buraktrium's internal pages can't open in the browser.");
     }
     let origin = url.origin().ascii_serialization();
     if app_origins.contains(&origin) {
-        return NavDecision::Block("Agentrium itself can't open in its own browser.");
+        return NavDecision::Block("Buraktrium itself can't open in its own browser.");
     }
     NavDecision::Allow
 }

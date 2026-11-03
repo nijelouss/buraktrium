@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTerminalStore } from '../../store/terminalStore';
+import { focusSession } from '../../lib/sessionFocus';
 import { StateDot } from '../StateDot';
 import { Tooltip } from '../ui/Tooltip';
 
@@ -14,7 +15,6 @@ export function WaitingPill() {
   const terminals = useTerminalStore((s) => s.terminals);
   const activeTerminalId = useTerminalStore((s) => s.activeTerminalId);
   const terminalStates = useTerminalStore((s) => s.terminalStates);
-  const setActiveTerminal = useTerminalStore((s) => s.setActiveTerminal);
 
   const waiting = useMemo(
     () =>
@@ -34,9 +34,9 @@ export function WaitingPill() {
   const first = waiting[0].config;
 
   return (
-    <Tooltip label={`Go to ${first.nickname || first.label}`}>
+    <Tooltip label={`Go to ${first.nickname || first.label} (Ctrl+Shift+J)`}>
       <button
-        onClick={() => setActiveTerminal(first.id)}
+        onClick={() => focusSession(first.id)}
         aria-label={`${waiting.length} session${waiting.length === 1 ? '' : 's'} waiting for input`}
         className="no-drag flex items-center gap-1.5 h-7 px-2.5 rounded-full text-[11.5px] font-medium text-[color:var(--attention-input)] bg-[color-mix(in_srgb,var(--attention-input)_14%,transparent)] hover:bg-[color-mix(in_srgb,var(--attention-input)_22%,transparent)] transition-colors"
       >

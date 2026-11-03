@@ -121,7 +121,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
     <Modal
       onClose={handleGuest}
       showHeader
-      title="Sign in to Agentrium"
+      title="Sign in to Buraktrium"
       panelClassName="w-full max-w-md"
     >
       <div className="p-5 space-y-3">

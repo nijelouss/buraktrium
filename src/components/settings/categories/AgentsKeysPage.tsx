@@ -89,7 +89,7 @@ export default function AgentsKeysPage() {
 
   return (
     <div>
-      <PageHeader title="Agents & Keys" description="Which coding agents Agentrium can launch, and the credentials it hands them." />
+      <PageHeader title="Agents & Keys" description="Which coding agents Buraktrium can launch, and the credentials it hands them." />
 
       {loadError && (
         <div className="mb-4 p-3 rounded-md bg-error/5 ring-1 ring-error/20 text-error text-[12px]">Credential store unavailable: {loadError}</div>
@@ -140,7 +140,7 @@ export default function AgentsKeysPage() {
         <div className="flex items-start justify-between mb-1.5">
           <div>
             <h3 className="text-text-primary text-[13px] font-semibold">API keys</h3>
-            <p className="text-text-tertiary text-[11.5px]">Stored in your OS credential store. Agentrium keeps labels only.</p>
+            <p className="text-text-tertiary text-[11.5px]">Stored in your OS credential store. Buraktrium keeps labels only.</p>
           </div>
           <button onClick={() => openAddKey()} className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg bg-fill-hover ring-1 ring-seam text-text-primary text-[11.5px] font-semibold hover:bg-fill-active">
             <Plus size={12} strokeWidth={2.5} /> Add key

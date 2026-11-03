@@ -189,7 +189,7 @@ export function AddApiKeyModal({ editing }: { editing?: CredentialMeta | null } 
           <div className="mt-2 flex items-start gap-2 p-2.5 rounded-lg bg-success/[0.08] ring-1 ring-success/20">
             <ShieldCheck size={14} className="text-success mt-0.5 flex-shrink-0" />
             <p className="text-text-secondary text-[11.5px] leading-relaxed">
-              Saved to your OS credential store. Agentrium keeps only the label and variable name; the value is read at launch and handed to the agent process, never written to profiles, session logs or telemetry.
+              Saved to your OS credential store. Buraktrium keeps only the label and variable name; the value is read at launch and handed to the agent process, never written to profiles, session logs or telemetry.
             </p>
           </div>
         </div>

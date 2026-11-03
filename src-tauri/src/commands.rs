@@ -504,7 +504,7 @@ pub async fn create_terminal(
 
         // Compute log file path
         let log_path = {
-            let data_dir = directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+            let data_dir = directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
                 .ok_or("Failed to get project directories")?
                 .data_dir()
                 .to_path_buf();
@@ -3659,7 +3659,7 @@ pub async fn get_session_history(
 pub async fn read_log_file(path: String) -> Result<String, String> {
     wrap_cmd("read_log_file", async move {
         // Validate path is under the logs directory
-        let data_dir = directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+        let data_dir = directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
             .ok_or("Failed to get project directories")?
             .data_dir()
             .to_path_buf();
@@ -3697,7 +3697,7 @@ pub async fn delete_session_history(
     wrap_cmd("delete_session_history", async move {
         // Delete log file if it exists, but only if it's under the logs directory
         if let Some(ref path) = log_path {
-            let data_dir = directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+            let data_dir = directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
                 .ok_or("Failed to get project directories")?
                 .data_dir()
                 .to_path_buf();
@@ -3734,7 +3734,7 @@ pub async fn get_session_log(
         };
 
         // Validate path is under the logs directory
-        let data_dir = directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+        let data_dir = directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
             .ok_or("Failed to get project directories")?
             .data_dir()
             .to_path_buf();
@@ -4076,7 +4076,7 @@ pub async fn summarize_session(state: State<'_, AppState>, log_path: String) -> 
             return Ok(None);
         }
         // Validate path is under the logs directory
-        let data_dir = directories::ProjectDirs::from("com", "claudeterminal", "ClaudeTerminal")
+        let data_dir = directories::ProjectDirs::from("com", "buraktrium", "Buraktrium")
             .ok_or("Failed to get project directories")?
             .data_dir()
             .to_path_buf();

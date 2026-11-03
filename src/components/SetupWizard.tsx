@@ -123,7 +123,7 @@ export function SetupWizard({ onComplete }: SetupWizardProps) {
         {/* Header */}
         <div className="p-6 border-b border-[var(--seam)] text-center">
           <img src={appIcon} alt="" className="w-16 h-16 mx-auto mb-4 select-none drop-shadow-[0_8px_28px_var(--accent-glow-md)]" draggable={false} />
-          <h1 className="text-[24px] font-bold text-text-primary mb-1 tracking-display">Welcome to Agentrium</h1>
+          <h1 className="text-[24px] font-bold text-text-primary mb-1 tracking-display">Welcome to Buraktrium</h1>
           <p className="text-text-secondary text-[13px]">Let's make sure everything is set up correctly</p>
         </div>
 

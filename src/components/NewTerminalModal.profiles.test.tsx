@@ -18,7 +18,7 @@ const profile = (id: string, name: string, is_default: boolean) => ({
 beforeEach(() => {
   invoke.mockReset();
   invoke.mockImplementation(async (cmd: string) => {
-    if (cmd === 'get_profiles') return [profile('p1', 'Agentrium', false), profile('p2', 'Agentrium Dev', true)];
+    if (cmd === 'get_profiles') return [profile('p1', 'Buraktrium', false), profile('p2', 'Buraktrium Dev', true)];
     return [];
   });
   useAppStore.setState({ newTerminalModalOpen: true, newTerminalPreselectedAgent: null, pinnedProfileIds: [] });
@@ -30,7 +30,7 @@ describe('NewTerminalModal profile picker', () => {
   it('exposes the list as a radiogroup with exactly one checked row', async () => {
     render(<NewTerminalModal />);
     const group = await screen.findByRole('radiogroup', { name: 'Profile' });
-    await within(group).findByRole('radio', { name: /Agentrium Dev/ });
+    await within(group).findByRole('radio', { name: /Buraktrium Dev/ });
     const radios = within(group).getAllByRole('radio');
     expect(radios.map(r => r.getAttribute('aria-checked'))).toEqual(['false', 'false', 'true']);
     expect(within(group).getByRole('radio', { name: /No Profile/ }).getAttribute('aria-checked')).toBe('false');
@@ -39,8 +39,8 @@ describe('NewTerminalModal profile picker', () => {
   it('moves the checked state when another row is clicked', async () => {
     render(<NewTerminalModal />);
     const group = await screen.findByRole('radiogroup', { name: 'Profile' });
-    const dev = await within(group).findByRole('radio', { name: /Agentrium Dev/ });
-    const ag = within(group).getByRole('radio', { name: /^Agentrium C:/ });
+    const dev = await within(group).findByRole('radio', { name: /Buraktrium Dev/ });
+    const ag = within(group).getByRole('radio', { name: /^Buraktrium C:/ });
     fireEvent.click(ag);
     expect(ag.getAttribute('aria-checked')).toBe('true');
     expect(dev.getAttribute('aria-checked')).toBe('false');
@@ -52,7 +52,7 @@ describe('NewTerminalModal profile picker', () => {
   it('marks every row with a radio ring and no longer uses a trailing check icon', async () => {
     render(<NewTerminalModal />);
     const group = await screen.findByRole('radiogroup', { name: 'Profile' });
-    await within(group).findByRole('radio', { name: /Agentrium Dev/ });
+    await within(group).findByRole('radio', { name: /Buraktrium Dev/ });
     // The ring is the visible affordance on every row, so unselected rows
     // read as "not this one" instead of showing nothing.
     expect(group.querySelectorAll('[data-testid="profile-radio-ring"]').length).toBe(3);

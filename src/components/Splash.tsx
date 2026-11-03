@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import appIcon from '../assets/app-icon.png';
 
-const APP_NAME = 'Agentrium';
+const APP_NAME = 'Buraktrium';
 
 // Phase timings (ms). Total ≈ 0.9s prompt + ~0.7s typing + 0.45s hold +
 // 0.3s submit + 2.4s logo/loading ≈ 4.7s; click/Enter/Escape skips anytime.
@@ -16,7 +16,7 @@ type Phase = 'prompt' | 'typing' | 'hold' | 'submit' | 'logo';
 
 /**
  * Launch splash - a terminal boot vignette: a lone blinking underscore (a
- * console waiting for input), "Agentrium" typed character by character, the
+ * console waiting for input), "Buraktrium" typed character by character, the
  * command submitted, then the app logo springs in over the gradient loading
  * bar. Shown once per main-window launch; click anywhere to skip. Exit fade
  * is driven by the parent <AnimatePresence>.
@@ -80,7 +80,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
       exit={{ opacity: 0, transition: { duration: 0.55, ease: 'easeInOut' } }}
       onClick={finish}
       role="dialog"
-      aria-label="Loading Agentrium"
+      aria-label="Loading Buraktrium"
     >
       {/* Faint night glow that breathes in once the logo lands */}
       <motion.div
@@ -156,7 +156,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
               style={{ left: `calc(${progress * 100}% - 4rem)`, opacity: progress > 0.02 && progress < 0.99 ? 1 : 0 }}
             />
           </div>
-          <div className="text-white/75 text-[11px] font-semibold tracking-[0.22em] uppercase">Agentrium</div>
+          <div className="text-white/75 text-[11px] font-semibold tracking-[0.22em] uppercase">Buraktrium</div>
         </motion.div>
         </div>
       )}

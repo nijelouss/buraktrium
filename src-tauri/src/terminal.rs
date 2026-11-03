@@ -142,8 +142,8 @@ pub(crate) fn render_initial_prompt(
 /// local user could pre-create the folder or a symlink and read or swap a
 /// prompt before the agent reads it.
 fn prompt_dir() -> Result<std::path::PathBuf, String> {
-    let app_name = format!("ClaudeTerminal{}", crate::instance_suffix());
-    let base = directories::ProjectDirs::from("com", "claudeterminal", &app_name)
+    let app_name = format!("Buraktrium{}", crate::instance_suffix());
+    let base = directories::ProjectDirs::from("com", "buraktrium", &app_name)
         .ok_or("Failed to get project directories")?
         .data_dir()
         .to_path_buf();
@@ -1242,7 +1242,7 @@ mod tests {
     /// Regression test for #70: Claude Code only turns on terminal mouse
     /// reporting in its fullscreen renderer, so forcing the classic renderer
     /// (`CLAUDE_CODE_NO_FLICKER=0`) silently broke clicking permission-prompt
-    /// options. Agentrium must not pick a renderer on the user's behalf; only
+    /// options. Buraktrium must not pick a renderer on the user's behalf; only
     /// an explicit profile/session value may set the variable.
     #[test]
     fn claude_renderer_choice_is_left_to_claude_unless_profile_env_sets_it() {
@@ -1255,7 +1255,7 @@ mod tests {
         configure_agent_environment(&mut cmd, &claude_spec, &HashMap::new());
         assert!(
             cmd.get_env("CLAUDE_CODE_NO_FLICKER").is_none(),
-            "Agentrium must not inject CLAUDE_CODE_NO_FLICKER for Claude (#70)"
+            "Buraktrium must not inject CLAUDE_CODE_NO_FLICKER for Claude (#70)"
         );
 
         let overrides = HashMap::from([("CLAUDE_CODE_NO_FLICKER".to_string(), "0".to_string())]);

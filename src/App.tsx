@@ -33,7 +33,7 @@ import { PasteAsFileDrawer } from './components/PasteAsFileDrawer';
 import { PromptEditorDrawer } from './components/PromptEditorDrawer';
 import { CommandPalette } from './components/CommandPalette';
 import { SetupWizard } from './components/SetupWizard';
-import { AutoUpdater } from './components/AutoUpdater';
+import { AutoHideSidebar, SidebarPinButton } from './components/AutoHideSidebar';
 import { WhatsNewModal } from './components/WhatsNewModal';
 import { LoginModal } from './components/LoginModal';
 import { ClaudeConfigModal } from './components/ClaudeConfigModal';
@@ -66,8 +66,7 @@ import { openLearnFor } from './lib/openLearnFor';
 import { shouldAutoLearn } from './lib/learn';
 import { useLearnStore } from './store/learnStore';
 import { toast } from './store/toastStore';
-import { getAuthPromptSeen, subscribeToAuthEvents, rehydrateAuth } from './lib/auth';
-import { applyRehydrateOutcome } from './lib/rehydrate';
+import { subscribeToAuthEvents } from './lib/auth';
 import { getSyncEnabled, subscribeToSyncEvents } from './lib/sync';
 import { useSyncStore } from './store/syncStore';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
@@ -147,15 +146,6 @@ interface SystemStatus {
  * Only an unexpected IPC failure lands in the catch; "broker down" is a
  * regular outcome handled by applyRehydrateOutcome.
  */
-async function tryRehydrateAuth(): Promise<boolean> {
-  try {
-    return applyRehydrateOutcome(await rehydrateAuth());
-  } catch (e) {
-    console.warn('[auth] rehydrate failed:', e);
-    return false;
-  }
-}
-
 function App() {
   useSessionContext();
   const newTaskModalOpen = useAppStore((s) => s.newTaskModalOpen);
@@ -164,7 +154,7 @@ function App() {
   const finishTaskTerminalId = useAppStore((s) => s.finishTaskTerminalId);
   const ciRepairTerminalId = useAppStore((s) => s.ciRepairTerminalId);
   const closeCiRepair = useAppStore((s) => s.closeCiRepair);
-  const { sidebarOpen, sidebarCollapsed, sidebarWidth, setSidebarWidth, hintsOpen, changesOpen, workspacesOpen, learnOpen, learnEnabled, settingsOpen, profileModalOpen, newTerminalModalOpen, workspaceModalOpen, worktreeModalOpen, pushModalOpen, createPrModalOpen, sessionHistoryOpen, snippetsModalOpen, commandPaletteOpen, globalSearchOpen, whatsNewOpen, claudeConfigOpen, sessionTimelineOpen, memoryEditorOpen, showStatusBar, notifyOnFinish, restoreSession, triggerChangesRefresh, showRestoreBanner, pendingRestoreConfigs, setShowRestoreBanner, setPendingRestoreConfigs, lastSeenVersion, setLastSeenVersion, openWhatsNew } = useAppStore();
+  const { sidebarOpen, sidebarCollapsed, sidebarWidth, sidebarAutoHide, setSidebarWidth, hintsOpen, changesOpen, workspacesOpen, learnOpen, learnEnabled, settingsOpen, profileModalOpen, newTerminalModalOpen, workspaceModalOpen, worktreeModalOpen, pushModalOpen, createPrModalOpen, sessionHistoryOpen, snippetsModalOpen, commandPaletteOpen, globalSearchOpen, whatsNewOpen, claudeConfigOpen, sessionTimelineOpen, memoryEditorOpen, showStatusBar, notifyOnFinish, restoreSession, triggerChangesRefresh, showRestoreBanner, pendingRestoreConfigs, setShowRestoreBanner, setPendingRestoreConfigs, lastSeenVersion, setLastSeenVersion, openWhatsNew } = useAppStore();
   const { handleTerminalOutput, updateTerminalStatus, setLoopMode, setSessionSummary, createTerminal, createShellTerminalTab, applyTerminalMetrics, adoptTerminal, detachTerminals, closeTerminal, terminals } = useTerminalStore();
 
   // Window identity. A torn-off ("detached") window renders the SAME full
@@ -349,18 +339,8 @@ function App() {
       await invoke('set_telemetry_enabled', { enabled: useAppStore.getState().telemetryEnabled }).catch(() => {});
       if (cancelled) return;
 
-      const rehydrated = await tryRehydrateAuth();
-      if (cancelled) return;
-      if (rehydrated) return; // already signed in - no modal needed
-
-      const seen = await getAuthPromptSeen();
-      if (cancelled) return;
-      if (!seen) {
-        useAuthStore.getState().setUnknown();
-        setShowLoginModal(true);
-      } else {
-        useAuthStore.getState().setGuest();
-      }
+      // Independent build: there is no account server, so always run as guest.
+      useAuthStore.getState().setGuest();
     })();
     return () => {
       cancelled = true;
@@ -1050,8 +1030,7 @@ function App() {
 
       {!showSetup && (
         <>
-          {!isDetached && <AutoUpdater />}
-
+          
           {/* Restore Banner (F3) - main window only. Slimmer, icon-led,
               inline-notification style matching IntelliJ's "did you mean" bar. */}
           <AnimatePresence>
@@ -1092,13 +1071,19 @@ function App() {
               their radius is the window radius minus that inset, so every
               corner nests. There is no title bar: TitleBar floats as glass
               capsules over the top --h-toolbar of the cards on the right. */}
-          <div className="flex-1 flex overflow-hidden gap-[var(--inset-window)] p-[var(--inset-window)]">
+          <div
+            className="relative flex-1 flex overflow-hidden gap-[var(--inset-window)] p-[var(--inset-window)]"
+            // Reserve a column for the session strip so it never covers terminal text.
+            style={sidebarAutoHide ? { paddingLeft: 'var(--w-session-strip)' } : undefined}
+          >
+            {sidebarAutoHide && <AutoHideSidebar />}
             <AnimatePresence mode="wait">
-              {sidebarOpen && (
+              {!sidebarAutoHide && sidebarOpen && (
                 <div
-                  className="h-full overflow-hidden rounded-[var(--radius-card)] shadow-elevation-3 material-lens flex flex-col transition-all duration-200 ease-out"
+                  className="relative h-full overflow-hidden rounded-[var(--radius-card)] shadow-elevation-3 material-lens flex flex-col transition-all duration-200 ease-out"
                   style={{ width: sidebarCollapsed ? 'var(--w-rail)' : sidebarWidth, flexShrink: 0 }}
                 >
+                  {!sidebarCollapsed && <SidebarPinButton />}
                   <SidebarWindowHeader collapsed={sidebarCollapsed} />
                   <div className="flex-1 min-h-0">
                     <Sidebar />
@@ -1106,7 +1091,7 @@ function App() {
                 </div>
               )}
             </AnimatePresence>
-            {sidebarOpen && !sidebarCollapsed && (
+            {!sidebarAutoHide && sidebarOpen && !sidebarCollapsed && (
               <SidebarResizeHandle width={sidebarWidth} onWidthChange={setSidebarWidth} />
             )}
 

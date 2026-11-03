@@ -918,7 +918,7 @@ fn find_registered(tasks: Vec<TaskInfo>, worktree_path: &str) -> Result<TaskInfo
     tasks
         .into_iter()
         .find(|t| same_path(&t.worktree_path, worktree_path))
-        .ok_or_else(|| user_err("This worktree is not a task managed by Agentrium."))
+        .ok_or_else(|| user_err("This worktree is not a task managed by Buraktrium."))
 }
 
 /// Key for the per-repo setup command: the main repo root as a string, so a
@@ -1522,7 +1522,7 @@ mod tests {
         let e = find_registered(vec![], "/nope").unwrap_err();
         assert_eq!(
             e,
-            user_err("This worktree is not a task managed by Agentrium.")
+            user_err("This worktree is not a task managed by Buraktrium.")
         );
     }
 

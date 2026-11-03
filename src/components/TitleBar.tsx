@@ -16,11 +16,8 @@ import { useAppStore } from '../store/appStore';
 import { useTerminalStore } from '../store/terminalStore';
 import { useBrowserStore } from '../store/browserStore';
 import { toast } from '../store/toastStore';
-import { UpdatePill } from './UpdatePill';
 import { WaitingPill } from './titlebar/WaitingPill';
 import { TrafficLights, CaptionButtons, isMac } from './titlebar/WindowControls';
-import { HeaderAuth } from './HeaderAuth';
-import { SyncStatusChip } from './SyncStatusChip';
 import { Tooltip } from './ui/Tooltip';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { ListRow } from './ui/ListRow';
@@ -181,7 +178,7 @@ export function TitleBar() {
         {!sidebarOpen && (
           <span className="flex items-center gap-2 flex-shrink-0">
             <img src={appIcon} alt="" className="w-[26px] h-[26px]" draggable={false} />
-            <span className="text-[13px] font-semibold text-text-primary tracking-tight">Agentrium</span>
+            <span className="text-[13px] font-semibold text-text-primary tracking-tight">Buraktrium</span>
           </span>
         )}
 
@@ -318,8 +315,6 @@ export function TitleBar() {
 
       {/* Trailing: tools capsule, caption buttons. */}
       <div className="flex items-center gap-1.5 no-drag flex-shrink-0">
-        <UpdatePill />
-
         <div className="glass-capsule h-8 px-0.5">
           {/* ONE inspector toggle - the Changes/Agents/Commands switcher
               lives inside the Inspector itself. Reopens on the Changes tab. */}
@@ -339,8 +334,6 @@ export function TitleBar() {
             </button>
           </Tooltip>
           <ThemeToggle />
-          <SyncStatusChip />
-          <HeaderAuth />
         </div>
 
         {!isMac && <CaptionButtons />}

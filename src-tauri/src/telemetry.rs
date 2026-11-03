@@ -1,7 +1,9 @@
 use serde::Serialize;
 use std::sync::atomic::{AtomicBool, Ordering};
 
-const WORKER_URL: &str = "https://ct-analytics.claude-terminal.workers.dev";
+// Independent build: nothing is ever sent. `.invalid` can never resolve (RFC 2606).
+const WORKER_URL: &str = "https://disabled.invalid";
+const SENDING_DISABLED: bool = true;
 
 /// Whether the user has telemetry (usage heartbeats) turned on, as last
 /// reported by the frontend via `send_telemetry_heartbeat`. Defaults to
@@ -29,6 +31,9 @@ struct HeartbeatPayload {
 }
 
 pub async fn send_heartbeat(installation_id: String, app_version: String) {
+    if SENDING_DISABLED {
+        return;
+    }
     let os = std::env::consts::OS.to_string();
     let os_version = format!("{}-{}", std::env::consts::OS, std::env::consts::ARCH);
 

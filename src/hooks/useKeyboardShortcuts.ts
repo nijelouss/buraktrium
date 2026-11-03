@@ -9,6 +9,7 @@ import { readClipboardText } from '../lib/clipboard';
 import { cyclableTabIds, nextTabId } from '../lib/tabCycle';
 import { matchesKeyCode } from '../lib/keymap';
 import { closeWithConfirm } from '../lib/closeConfirm';
+import { jumpToNextWaiting } from '../lib/sessionFocus';
 
 /**
  * Return true when the focused element is an editable surface that is NOT
@@ -155,7 +156,7 @@ export function useKeyboardShortcuts() {
 
       if (ctrl && !shift && matchesKeyCode(e, 'B')) {
         e.preventDefault();
-        useAppStore.getState().toggleSidebar();
+        useAppStore.getState().toggleSidebarVisible();
       }
 
       if (ctrl && !shift && matchesKeyCode(e, 'W')) {
@@ -258,6 +259,26 @@ export function useKeyboardShortcuts() {
         } else {
           state.openMemoryEditor();
         }
+      }
+
+      // Jump to the next session waiting for you: Ctrl+Shift+J
+      if (ctrl && shift && matchesKeyCode(e, 'J')) {
+        e.preventDefault();
+        jumpToNextWaiting();
+      }
+
+      // Sidebar and grid from inside a terminal. Plain Ctrl+B and Ctrl+G never
+      // arrive here while a terminal has focus: xterm sends them to the program
+      // and stops the event, and agent CLIs use them (Claude Code: background a
+      // task, open an editor), so they are left alone. xterm does not handle
+      // Ctrl+Shift+letter, so these work everywhere.
+      if (ctrl && shift && matchesKeyCode(e, 'B')) {
+        e.preventDefault();
+        useAppStore.getState().toggleSidebarVisible();
+      }
+      if (ctrl && shift && matchesKeyCode(e, 'L')) {
+        e.preventDefault();
+        useAppStore.getState().toggleGridMode();
       }
 
       // Toggle Grid Mode: Ctrl+G
