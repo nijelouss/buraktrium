@@ -30,7 +30,7 @@ export type ThemeMode = 'dark' | 'light' | 'auto';
 export type AutoStageMode = 'none' | 'tracked' | 'all';
 export type MergeStrategy = 'merge' | 'rebase' | 'ff-only';
 export type SessionFilter = 'all' | 'tasks';
-export const DEFAULT_ACCENT_COLOR = '#007AFF'; // Apple system blue (vibrant, light-mode)
+export const DEFAULT_ACCENT_COLOR = '#C96F98'; // Muted rose pink, easy on the eyes
 
 /** Sentinel for openProfileModal: open the focused editor in CREATE mode
  *  (blank profile, no manage list). Never collides with real uuid ids. */
@@ -1402,7 +1402,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'claude-terminal-app',
-      version: 9,
+      version: 10,
       migrate: (persistedState, version) => {
         const s = (persistedState as Partial<AppState>) ?? {};
         if (version < 1) {
@@ -1476,6 +1476,13 @@ export const useAppStore = create<AppState>()(
           // it would render an empty body, so fall back to Sessions.
           if ((s.sidebarNav as string | undefined) === 'attention') {
             s.sidebarNav = 'sessions';
+          }
+        }
+        if (version < 10) {
+          // The default accent moved from Apple blue to muted rose. Users who
+          // never changed it follow the new default; explicit choices are kept.
+          if (s.accentColorHex?.toUpperCase() === '#007AFF') {
+            s.accentColorHex = DEFAULT_ACCENT_COLOR;
           }
         }
         return s as AppState;

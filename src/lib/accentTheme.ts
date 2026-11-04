@@ -41,12 +41,12 @@ export function applyThemeMode(mode: ThemeMode): void {
   root.style.colorScheme = effective; // native scrollbars/controls follow
   if (effective === 'light') {
     // Apple light ramp: soft page gray canvas, white floating surfaces.
-    root.style.setProperty('--canvas', '#E4E4E7'); // fallback under reduced-transparency
-    root.style.setProperty('--elevation-0', '#FCFCFE'); // content card - near white
-    root.style.setProperty('--elevation-1', '#EDEDEF');
-    root.style.setProperty('--elevation-2', '#FFFFFF');
-    root.style.setProperty('--elevation-3', '#E9E9EB');
-    root.style.setProperty('--elevation-4', '#FFFFFF');
+    root.style.setProperty('--canvas', '#EFDDE5'); // fallback under reduced-transparency
+    root.style.setProperty('--elevation-0', '#FBF3F6'); // content card - soft rose white
+    root.style.setProperty('--elevation-1', '#F3E6EC');
+    root.style.setProperty('--elevation-2', '#FFF9FB');
+    root.style.setProperty('--elevation-3', '#EEDCE4');
+    root.style.setProperty('--elevation-4', '#FFF9FB');
     root.style.setProperty('--seam', 'rgba(0, 0, 0, 0.08)');
     root.style.setProperty('--seam-strong', 'rgba(0, 0, 0, 0.14)');
     // Dark-on-light interactive fills (the dark defaults vanish on white glass).
@@ -55,23 +55,23 @@ export function applyThemeMode(mode: ThemeMode): void {
     root.style.setProperty('--fill-sel', 'rgba(0, 0, 0, 0.06)');
     root.style.setProperty('--edge-light', 'rgba(255, 255, 255, 0.9)'); // bright light-catch
     // Light-mode materials: white frosted glass over the pastel canvas.
-    root.style.setProperty('--material-chrome-bg', 'rgba(255, 255, 255, 0.72)');
-    root.style.setProperty('--material-overlay-bg', 'rgba(255, 255, 255, 0.80)');
-    root.style.setProperty('--material-sheet-bg', 'rgba(255, 255, 255, 0.97)');
-    root.style.setProperty('--material-popover-bg', 'rgba(255, 255, 255, 0.86)');
-    root.style.setProperty('--material-thin-bg', 'rgba(255, 255, 255, 0.66)');
+    root.style.setProperty('--material-chrome-bg', 'rgba(255, 246, 250, 0.72)');
+    root.style.setProperty('--material-overlay-bg', 'rgba(255, 246, 250, 0.80)');
+    root.style.setProperty('--material-sheet-bg', 'rgba(255, 249, 251, 0.97)');
+    root.style.setProperty('--material-popover-bg', 'rgba(255, 246, 250, 0.86)');
+    root.style.setProperty('--material-thin-bg', 'rgba(255, 246, 250, 0.66)');
     // Soft, cool float shadows over a light canvas.
-    root.style.setProperty('--shadow-float-sm', '0 2px 10px rgba(30, 40, 80, 0.08), 0 8px 26px rgba(30, 40, 80, 0.10)');
-    root.style.setProperty('--shadow-float-md', '0 4px 14px rgba(30, 40, 80, 0.10), 0 16px 40px rgba(30, 40, 80, 0.12)');
-    root.style.setProperty('--shadow-float-lg', '0 10px 34px rgba(30, 40, 80, 0.14), 0 30px 80px rgba(30, 40, 80, 0.18)');
-    root.style.setProperty('color', '#1D1D1F');
+    root.style.setProperty('--shadow-float-sm', '0 2px 10px rgba(70, 30, 50, 0.08), 0 8px 26px rgba(70, 30, 50, 0.10)');
+    root.style.setProperty('--shadow-float-md', '0 4px 14px rgba(70, 30, 50, 0.10), 0 16px 40px rgba(70, 30, 50, 0.12)');
+    root.style.setProperty('--shadow-float-lg', '0 10px 34px rgba(70, 30, 50, 0.14), 0 30px 80px rgba(70, 30, 50, 0.18)');
+    root.style.setProperty('color', '#2B1D24');
     // Flip the text tokens to dark-on-light. Without this the tokens stay at
     // their near-white dark-theme channels and become invisible on light
-    // surfaces. Apple light labels, WCAG AA-checked on the light ramp:
+    // surfaces. Rose-tinted labels, WCAG AA-checked on the light ramp:
     // primary ~15:1, secondary ~5.7:1, tertiary ~4.9:1 (all on elevation-0).
-    root.style.setProperty('--text-primary', '29 29 31');     // #1D1D1F
-    root.style.setProperty('--text-secondary', '99 99 102');  // #636366
-    root.style.setProperty('--text-tertiary', '108 108 114'); // #6C6C72
+    root.style.setProperty('--text-primary', '43 29 36');     // #2B1D24
+    root.style.setProperty('--text-secondary', '107 86 96');  // #6B5660
+    root.style.setProperty('--text-tertiary', '116 95 105'); // #745F69
     // Semantic overrides - Apple system palette, text-safe on light.
     // Dark defaults live in index.css :root.
     root.style.setProperty('--success', '#1F8A3D');

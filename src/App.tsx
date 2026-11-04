@@ -1001,7 +1001,7 @@ function App() {
   // flash before the splash video mounts.
   if (showSetup === null) {
     return (
-      <div className="h-screen w-screen bg-[#0a0a12] flex items-center justify-center">
+      <div className="h-screen w-screen bg-[#140D11] flex items-center justify-center">
         <div className="text-white/35 text-sm">Loading…</div>
       </div>
     );

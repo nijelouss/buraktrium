@@ -11,14 +11,14 @@ export type TerminalThemeName = 'auto' | 'dark' | 'light';
 // for legibility on a light background.
 export const TERMINAL_THEMES: Record<'dark' | 'light', ITheme> = {
   dark: {
-    // Match the app shell's content surface elevation-0 (#0F1320 midnight) so
+    // Match the app shell's content surface elevation-0 (#1C1319 plum) so
     // the terminal canvas reads as the editor surface, not a separate panel.
     // selectionBackground is overridden per the live accent in resolveTerminalTheme().
-    background: '#0F1320',
-    foreground: '#E7E9F0',
-    cursor: '#E7E9F0',
-    cursorAccent: '#0F1320',
-    selectionBackground: 'rgba(10, 132, 255, 0.28)',
+    background: '#1C1319',
+    foreground: '#EDE3E8',
+    cursor: '#EDE3E8',
+    cursorAccent: '#1C1319',
+    selectionBackground: 'rgba(201, 111, 152, 0.28)',
     black: '#171717',
     red: '#EF4444',
     green: '#4ADE80',
@@ -37,12 +37,12 @@ export const TERMINAL_THEMES: Record<'dark' | 'light', ITheme> = {
     brightWhite: '#FFFFFF',
   },
   light: {
-    // Match the light shell's content surface elevation-0 (#FCFCFE).
-    background: '#FCFCFE',
-    foreground: '#1D1D1F',
-    cursor: '#1D1D1F',
-    cursorAccent: '#FCFCFE',
-    selectionBackground: 'rgba(0, 122, 255, 0.18)',
+    // Match the light shell's content surface elevation-0 (#FBF3F6).
+    background: '#FBF3F6',
+    foreground: '#2B1D24',
+    cursor: '#2B1D24',
+    cursorAccent: '#FBF3F6',
+    selectionBackground: 'rgba(201, 111, 152, 0.22)',
     black: '#171717',
     red: '#DC2626',
     green: '#16A34A',

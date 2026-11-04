@@ -88,7 +88,7 @@ function resetAppStore() {
     uiDensity: 'comfortable',
     tabHeight: 'medium',
     colorfulFolderIcons: false,
-    accentColorHex: '#007AFF',
+    accentColorHex: '#C96F98',
     uiFontScale: 1.0,
     uiReduceMotion: false,
     notificationSoundEnabled: false,
@@ -588,7 +588,7 @@ describe('appStore - appearance v1.22.0 setters', () => {
     setAccentColorHex('#ABCDEF');
     expect(useAppStore.getState().accentColorHex).toBe('#ABCDEF');
     setAccentColorHex('not a color');
-    expect(useAppStore.getState().accentColorHex).toBe('#007AFF');
+    expect(useAppStore.getState().accentColorHex).toBe('#C96F98');
   });
 
   it('setThemeMode / setUiDensity / setUiReduceMotion set as given', () => {
@@ -687,6 +687,20 @@ describe('appStore - persist migration v3 → v4 (gemini → antigravity)', () =
     // The legacy key should not survive - future writes must use the new
     // shape or the persisted payload will grow stale entries forever.
     expect((args as Record<string, unknown>).gemini).toBeUndefined();
+  });
+});
+
+describe('appStore - persist migration v9 -> v10 (rose default accent)', () => {
+  it('moves the old blue default to the rose default', async () => {
+    localStorage.setItem(PERSIST_KEY, JSON.stringify({ version: 9, state: { accentColorHex: '#007AFF' } }));
+    await useAppStore.persist.rehydrate();
+    expect(useAppStore.getState().accentColorHex).toBe('#C96F98');
+  });
+
+  it('keeps an accent the user chose', async () => {
+    localStorage.setItem(PERSIST_KEY, JSON.stringify({ version: 9, state: { accentColorHex: '#34C759' } }));
+    await useAppStore.persist.rehydrate();
+    expect(useAppStore.getState().accentColorHex).toBe('#34C759');
   });
 });
 

@@ -13,8 +13,8 @@ registerSetting({ category: cat, id: 'status-bar',    label: 'Status bar',     k
 registerSetting({ category: cat, id: 'tab-activity',  label: 'Tab activity',   keywords: ['minimal', 'indicator', 'dot', 'busy', 'hide'] });
 registerSetting({ category: cat, id: 'compact-titlebar', label: 'Compact title bar', keywords: ['minimal', 'brand', 'chrome', 'hide'] });
 
-// Apple system palette: blue, green, purple, orange, red.
-const ACCENT_PRESETS = ['#007AFF', '#34C759', '#AF52DE', '#FF9500', '#FF3B30'];
+// Rose (default), then the system palette: blue, green, purple, orange, red.
+const ACCENT_PRESETS = ['#C96F98', '#007AFF', '#34C759', '#AF52DE', '#FF9500', '#FF3B30'];
 
 export default function AppearancePage() {
   const themeMode = useAppStore((s) => s.themeMode);

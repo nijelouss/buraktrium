@@ -75,7 +75,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100000] flex items-center justify-center bg-[#0a0a12] overflow-hidden cursor-pointer"
+      className="fixed inset-0 z-[100000] flex items-center justify-center bg-[#140D11] overflow-hidden cursor-pointer"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.55, ease: 'easeInOut' } }}
       onClick={finish}
@@ -87,7 +87,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(560px 420px at 50% 42%, rgba(59, 82, 180, 0.28), transparent 70%), radial-gradient(700px 520px at 52% 60%, rgba(122, 91, 255, 0.14), transparent 72%)',
+            'radial-gradient(560px 420px at 50% 42%, rgba(150, 70, 110, 0.28), transparent 70%), radial-gradient(700px 520px at 52% 60%, rgba(201, 111, 152, 0.14), transparent 72%)',
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: phase === 'logo' ? 1 : 0 }}
@@ -109,7 +109,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.28, ease: 'easeIn' }}
           >
-            <span className="text-[#5b8dff] mr-3 select-none">&gt;</span>
+            <span className="text-[#D98BB0] mr-3 select-none">&gt;</span>
             <span>{typed}</span>
             <span className="ct-caret inline-block w-[0.62em] border-b-[3px] border-white/90 ml-[2px] align-baseline" aria-hidden>
               &nbsp;
@@ -125,7 +125,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
             src={appIcon}
             alt=""
             draggable={false}
-            className="w-[120px] h-[120px] rounded-[28px] shadow-[0_18px_60px_rgba(59,82,180,0.45)]"
+            className="w-[120px] h-[120px] rounded-[28px] shadow-[0_18px_60px_rgba(201,111,152,0.35)]"
             initial={{ opacity: 0, scale: 0.55, filter: 'blur(14px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             transition={{ type: 'spring', stiffness: 260, damping: 22, mass: 0.9 }}
@@ -147,7 +147,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
         >
           <div className="relative w-full h-[3px] rounded-full bg-white/15 overflow-hidden">
             <div
-              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#38b6ff] via-[#5b8dff] to-[#7a5bff] shadow-[0_0_14px_rgba(122,91,255,0.75)]"
+              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#B85F8A] via-[#C96F98] to-[#E3A1BF] shadow-[0_0_14px_rgba(201,111,152,0.55)]"
               style={{ width: `${progress * 100}%`, transition: 'width 90ms linear' }}
             />
             {/* moving sheen on the filled portion */}

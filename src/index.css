@@ -134,33 +134,33 @@
   /* Deep macOS surface ramp. --canvas is the darkest tone shown in the gaps
      between floating panels; chrome (elevation-1) and content (elevation-0)
      float one step lighter above it. */
-  /* "Midnight" dark identity - deep blue-indigo, not neutral gray. Tinted so
+  /* Dark identity - deep muted rose-plum, low saturation for long sessions. Tinted so
      the night gradient and glass read as one rich, alive surface. */
-  --canvas: #080A12;       /* Window backdrop / gaps between floating panels */
-  --elevation-0: #0F1320;  /* Content / terminal surface - deep midnight blue */
-  --elevation-1: #141828;  /* Chrome: sidebar, titlebar, tab strip, status bar */
-  --elevation-2: #1B2036;  /* Cards, inline panels, inputs */
-  --elevation-3: #252B45;  /* Hover / selected fills */
-  --elevation-4: #2E3454;  /* Floating: menus, popovers, modal base */
+  --canvas: #140D11;       /* Window backdrop / gaps between floating panels */
+  --elevation-0: #1C1319;  /* Content / terminal surface - deep muted plum */
+  --elevation-1: #22171E;  /* Chrome: sidebar, titlebar, tab strip, status bar */
+  --elevation-2: #2C1F27;  /* Cards, inline panels, inputs */
+  --elevation-3: #392932;  /* Hover / selected fills */
+  --elevation-4: #46333D;  /* Floating: menus, popovers, modal base */
 
   /* Materials - translucent surfaces for floating layers. Weight = hierarchy:
      heavier (more opaque, more blur) separates structure; lighter draws focus.
      Chrome materials only turn translucent under data-vibrancy="on" (OS blur
      behind the window confirmed); overlay/popover materials blur app content
      behind them, which always exists. */
-  --material-chrome-bg: rgba(18, 24, 48, 0.5);       /* midnight frosted glass - shows the ambient gradient through */
-  --material-overlay-bg: rgba(22, 28, 52, 0.74);     /* command palette (Spotlight - stays translucent), blue-tinted so it reads as the same glass */
-  --material-sheet-bg: rgba(15, 19, 32, 0.97);       /* task modals - near-opaque elevation-0 (#0F1320): dialogs share the window's dominant content tone; controls step up to elevation-2 */
-  --material-popover-bg: rgba(28, 34, 60, 0.84);     /* menus, dropdowns, tooltips */
-  --material-thin-bg: rgba(40, 48, 82, 0.6);         /* chips, inline hints */
+  --material-chrome-bg: rgba(40, 24, 33, 0.5);       /* rose frosted glass - shows the ambient gradient through */
+  --material-overlay-bg: rgba(46, 28, 38, 0.74);     /* command palette (Spotlight - stays translucent), rose-tinted so it reads as the same glass */
+  --material-sheet-bg: rgba(28, 19, 25, 0.97);       /* task modals - near-opaque elevation-0 (#1C1319): dialogs share the window's dominant content tone; controls step up to elevation-2 */
+  --material-popover-bg: rgba(56, 36, 47, 0.84);     /* menus, dropdowns, tooltips */
+  --material-thin-bg: rgba(74, 50, 62, 0.6);         /* chips, inline hints */
   --material-blur: 40px;
   --material-saturate: 200%;
 
   /* Warm counter-light. The palette is blue (user accent) + orange: the orange
      is ambient only - canvas glow, glass reflections, shimmer - never a status
      or a control fill, so it can't be confused with --warning. */
-  --accent-warm: #FF8A3D;
-  --accent-warm-glow: rgba(255, 138, 61, 0.22);
+  --accent-warm: #E6A3A0;
+  --accent-warm-glow: rgba(230, 163, 160, 0.2);
 
   /* Specular light catching the top edge of a glass material (Apple Liquid
      Glass). Brighter = more "wet"/refractive. Light-mode override in
@@ -182,8 +182,8 @@
      echoing the canvas glows behind them. Sidebar/Inspector lens slabs only
      (pop-ups use --glass-wash instead); on small capsules it reads as a smudge. */
   --glass-ambient:
-    radial-gradient(80% 55% at 100% 100%, rgba(255, 138, 61, 0.09), transparent 70%),
-    radial-gradient(70% 50% at 0% 0%, rgba(64, 140, 255, 0.08), transparent 70%);
+    radial-gradient(80% 55% at 100% 100%, rgba(230, 163, 160, 0.07), transparent 70%),
+    radial-gradient(70% 50% at 0% 0%, rgba(201, 111, 152, 0.08), transparent 70%);
   --glass-edges: inset 0 1px 0 var(--edge-light), inset 0 0 0 1px var(--glass-edge-inner), inset 0 -1px 0 var(--glass-edge-low);
 
   /* Floating windows (modals, palette, menus, tooltips, chips): a cool
@@ -191,12 +191,12 @@
      clear frost toward the bottom-right, so every pop-up reads as one layered
      family distinct from the chrome slabs. Kept low-alpha: the dark sheet
      stays dark enough for AA text. Light values below. */
-  --glass-wash: linear-gradient(160deg, rgba(90, 150, 255, 0.13) 0%, rgba(120, 170, 255, 0.045) 45%, rgba(255, 255, 255, 0.04) 100%);
+  --glass-wash: linear-gradient(160deg, rgba(201, 111, 152, 0.12) 0%, rgba(214, 140, 175, 0.04) 45%, rgba(255, 255, 255, 0.04) 100%);
   /* Pale blue rim all round instead of a neutral hairline. */
-  --glass-edge-float: rgba(150, 190, 255, 0.12);
+  --glass-edge-float: rgba(235, 180, 205, 0.12);
   --glass-edges-float: inset 0 1px 0 var(--edge-light), inset 0 0 0 1px var(--glass-edge-float), inset 0 -1px 0 var(--glass-edge-low);
   /* Diffuse blue bloom under floating windows - depth without a harsh drop. */
-  --shadow-float-bloom: 0 24px 64px -16px rgba(40, 100, 230, 0.28);
+  --shadow-float-bloom: 0 24px 64px -16px rgba(150, 60, 105, 0.24);
 
   /* Float shadows - layered ambient+key, soft and navy-tinted (no harsh black
      drop). Light-mode overrides in applyThemeMode(). Bundled into the
@@ -217,19 +217,19 @@
   --fill-hover: rgba(255, 255, 255, 0.06);
   --fill-active: rgba(255, 255, 255, 0.10);
   --fill-sel: rgba(255, 255, 255, 0.08);
-  --ij-stripe: #0A84FF;               /* Selection stripe (accent-driven; settings tree + session cards) */
+  --ij-stripe: #C96F98;               /* Selection stripe (accent-driven; settings tree + session cards) */
 
-  /* Accent - Apple system blue (dark). applyAccentColor() overrides from the
+  /* Accent - muted rose pink. applyAccentColor() overrides from the
      user's choice; these keep first paint correct. */
-  --accent-primary: #0A84FF;
-  --accent-secondary: #3899FF;
+  --accent-primary: #C96F98;
+  --accent-secondary: #CD7AA0;
 
   /* Text tokens - space-separated RGB channels so Tailwind's /opacity
      modifiers resolve AND light mode can override in applyThemeMode().
      Dark values ~ macOS label/secondaryLabel/tertiaryLabel, AA-tuned. */
-  --text-primary: 245 245 247;   /* #F5F5F7 */
-  --text-secondary: 174 174 178; /* #AEAEB2 */
-  --text-tertiary: 152 152 159;  /* #98989F - WCAG AA (~5.2:1 on elevation-0) */
+  --text-primary: 245 238 242;   /* #F5EEF2 */
+  --text-secondary: 190 172 181; /* #BEACB5 */
+  --text-tertiary: 168 150 159;  /* #A8969F - WCAG AA on elevation-0 */
 
   /* Density tokens - driven by Appearance setting, default = comfortable */
   --ui-row-py: 6px;
@@ -299,15 +299,15 @@
      (re)set by applyAccentColor(); this default keeps focus-visible visible
      on first paint before that runs. */
   --focus-ring-width: 3px;
-  --border-focus: rgba(10, 132, 255, 0.45);
+  --border-focus: rgba(201, 111, 152, 0.45);
 
   /* Accent-derived shadow-glow tokens. Consumed by Tailwind's shadow-glow-sm /
      shadow-glow-md utilities. applyAccentColor() rewrites these from the
      user's chosen hex so focused surfaces glow in the current accent.
      --accent-glow (0.18), set elsewhere in accentTheme.ts, is a distinct
      token - do not consolidate. */
-  --accent-glow-sm: rgba(10, 132, 255, 0.14);
-  --accent-glow-md: rgba(10, 132, 255, 0.22);
+  --accent-glow-sm: rgba(201, 111, 152, 0.14);
+  --accent-glow-md: rgba(201, 111, 152, 0.22);
 }
 
 /* Standardized keyboard-focus ring - soft accent halo (macOS style).
@@ -384,13 +384,13 @@
   --radius-card: calc(var(--radius-window) - var(--inset-window));
   --window-edge-shadow: inset 0 0 0 1px var(--seam-strong);
   --h-toolbar: 38px; /* floating-toolbar zone at the top of each card */
-  --material-lens-bg: rgba(20, 24, 46, 0.52);
+  --material-lens-bg: rgba(38, 24, 32, 0.52);
   --material-capsule-bg: rgba(255, 255, 255, 0.07);
   /* Specular hot-spot: light source fixed top-left, like real glass. */
   --glass-hotspot: radial-gradient(120% 45% at 18% 0%, rgba(255, 255, 255, 0.09), transparent 60%);
 }
 :root[data-theme="light"] {
-  --material-lens-bg: rgba(255, 255, 255, 0.58);
+  --material-lens-bg: rgba(255, 246, 250, 0.58);
   --material-capsule-bg: rgba(255, 255, 255, 0.70);
   --glass-hotspot: radial-gradient(120% 45% at 18% 0%, rgba(255, 255, 255, 0.55), transparent 60%);
 }
@@ -548,7 +548,7 @@ button.bg-accent-primary.text-white:disabled { box-shadow: var(--btn-edges); }
 }
 
 :root[data-vibrancy="on"] {
-  --material-chrome-bg: rgba(24, 24, 27, 0.55);
+  --material-chrome-bg: rgba(34, 23, 30, 0.55);
 }
 :root[data-vibrancy="on"] .material-chrome {
   backdrop-filter: blur(30px) saturate(170%);
@@ -560,7 +560,7 @@ button.bg-accent-primary.text-white:disabled { box-shadow: var(--btn-edges); }
   background: transparent;
 }
 :root[data-vibrancy="on"][data-theme="light"] {
-  --material-chrome-bg: rgba(240, 240, 243, 0.72);
+  --material-chrome-bg: rgba(248, 236, 241, 0.72);
 }
 
 /* --- Bright-vibrant Apple identity (light) ---------------------------------
@@ -568,26 +568,26 @@ button.bg-accent-primary.text-white:disabled { box-shadow: var(--btn-edges); }
    frosted glass that blur it. No OS vibrancy needed - the gradient lives
    inside the window, so backdrop-filter always has real content to blur. */
 .app-root { background: var(--canvas); }
-/* Light: airy field - sky blue from the top-left, soft peach light from the
+/* Light: airy field - soft rose from the top-left, soft peach light from the
    bottom-right. */
 :root[data-theme="light"] .app-root {
   background:
-    radial-gradient(1100px 760px at 14% 8%,  #b8d4ff 0%, transparent 55%),
-    radial-gradient(1000px 820px at 88% 92%, #ffd2b0 0%, transparent 55%),
-    radial-gradient(900px 720px at 74% 22%,  #c8e4ff 0%, transparent 60%),
-    radial-gradient(800px 700px at 30% 80%,  #ffe6d2 0%, transparent 60%),
-    linear-gradient(140deg, #ecf3ff, #fff6ee 72%);
+    radial-gradient(1100px 760px at 14% 8%,  #f3c9da 0%, transparent 55%),
+    radial-gradient(1000px 820px at 88% 92%, #f5d3cc 0%, transparent 55%),
+    radial-gradient(900px 720px at 74% 22%,  #f7dbe6 0%, transparent 60%),
+    radial-gradient(800px 700px at 30% 80%,  #fae6e4 0%, transparent 60%),
+    linear-gradient(140deg, #fbeff4, #fdf3f1 72%);
 }
-/* Dark: vibrant blue + orange ambient lighting - a saturated blue key light
-   top-left, a warm orange glow pooling bottom-right, kept deep enough that the
+/* Dark: muted rose ambient lighting - a soft plum key light
+   top-left, a dim warm rose glow bottom-right, kept deep enough that the
    floating content card and its text stay high-contrast. */
 :root[data-theme="dark"] .app-root {
   background:
-    radial-gradient(1100px 760px at 14% 8%,  #1d3f9e 0%, transparent 55%),
-    radial-gradient(1000px 820px at 88% 92%, #7a3311 0%, transparent 55%),
-    radial-gradient(900px 720px at 74% 22%,  #0f4a8c 0%, transparent 60%),
-    radial-gradient(800px 700px at 30% 80%,  #1a2a66 0%, transparent 60%),
-    linear-gradient(140deg, #070b18, #0c0a14 72%);
+    radial-gradient(1100px 760px at 14% 8%,  #5a2a45 0%, transparent 55%),
+    radial-gradient(1000px 820px at 88% 92%, #4d2a33 0%, transparent 55%),
+    radial-gradient(900px 720px at 74% 22%,  #4a2540 0%, transparent 60%),
+    radial-gradient(800px 700px at 30% 80%,  #3a1f33 0%, transparent 60%),
+    linear-gradient(140deg, #140c11, #170e13 72%);
 }
 /* Filling the screen: no gaps or rounded corners for the backdrop to show
    through. Solid, so the session strip's column matches the terminals. */
@@ -626,14 +626,14 @@ button.bg-accent-primary.text-white:disabled { box-shadow: var(--btn-edges); }
   --glass-sheen: rgba(255, 255, 255, 0.5);
   --glass-edge-inner: rgba(255, 255, 255, 0.55);
   --glass-edge-low: rgba(30, 40, 80, 0.06);
-  /* Light pop-ups: pale sky blue at the top-left fading to clear white. */
-  --glass-wash: linear-gradient(160deg, rgba(196, 220, 255, 0.6) 0%, rgba(226, 238, 255, 0.32) 45%, rgba(255, 255, 255, 0) 100%);
+  /* Light pop-ups: pale rose at the top-left fading to clear white. */
+  --glass-wash: linear-gradient(160deg, rgba(240, 200, 218, 0.6) 0%, rgba(248, 226, 236, 0.32) 45%, rgba(255, 255, 255, 0) 100%);
   --glass-edge-float: rgba(255, 255, 255, 0.7);
-  --shadow-float-bloom: 0 24px 64px -16px rgba(60, 110, 220, 0.2);
+  --shadow-float-bloom: 0 24px 64px -16px rgba(190, 90, 135, 0.2);
   /* White glass needs more colour to show the bounce light at all. */
   --glass-ambient:
-    radial-gradient(80% 55% at 100% 100%, rgba(255, 138, 61, 0.12), transparent 70%),
-    radial-gradient(70% 50% at 0% 0%, rgba(64, 140, 255, 0.1), transparent 70%);
+    radial-gradient(80% 55% at 100% 100%, rgba(230, 163, 160, 0.12), transparent 70%),
+    radial-gradient(70% 50% at 0% 0%, rgba(201, 111, 152, 0.1), transparent 70%);
 }
 
 /* Increased contrast: defined borders on floating surfaces. */
@@ -775,7 +775,7 @@ button.bg-accent-primary.text-white:disabled { box-shadow: var(--btn-edges); }
 }
 .ct-orb-a {
   width: 460px; height: 460px; top: 6%; left: 10%;
-  background: radial-gradient(circle, rgba(10, 132, 255, 0.30), transparent 70%);
+  background: radial-gradient(circle, rgba(201, 111, 152, 0.30), transparent 70%);
   animation: ct-orb-a 19s ease-in-out infinite;
 }
 .ct-orb-b {

@@ -171,7 +171,7 @@ export function AddAgentModal() {
                     <button key={p.id} type="button" onClick={() => applyPreset(p)} aria-pressed={sel}
                       className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-colors ${isCustom ? 'border border-dashed border-[rgba(255,255,255,0.14)] text-text-tertiary hover:bg-fill-hover' : sel ? 'bg-accent-primary/12 ring-1 ring-accent-primary/45' : 'bg-fill-hover ring-1 ring-seam hover:bg-fill-active'}`}>
                       {isCustom ? <Code2 size={18} /> : (
-                        <span className="inline-flex items-center justify-center w-[22px] h-[22px] rounded-[6px] text-[12px] font-bold" style={{ background: p.color, color: '#0F1320' }}>{monogramFor(p.name)}</span>
+                        <span className="inline-flex items-center justify-center w-[22px] h-[22px] rounded-[6px] text-[12px] font-bold" style={{ background: p.color, color: '#1C1319' }}>{monogramFor(p.name)}</span>
                       )}
                       <span className="text-[12px] font-medium text-text-primary">{isCustom ? 'Custom binary' : p.name}</span>
                     </button>
