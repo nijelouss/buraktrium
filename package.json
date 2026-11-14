@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "update-local": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/update-local.ps1"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",
