@@ -16,6 +16,9 @@ export default defineConfig({
   test: {
     clearMocks: true,
     restoreMocks: true,
+    // Node 25+ ships its own global localStorage, which hides jsdom's and is
+    // undefined without --localstorage-file, so every persisted store throws.
+    execArgv: ['--no-experimental-webstorage'],
     projects: [
       {
         extends: true,
