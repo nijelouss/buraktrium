@@ -6,7 +6,8 @@
 // download-modify-upload. The three build jobs run in parallel, so one job's
 // merge can overwrite another's. v1.38.0 shipped without darwin-aarch64 that
 // way and every Apple Silicon install failed its update check. Running once,
-// after all builds, with every platform required, makes the manifest
+// after all builds, with every platform required (Buraktrium builds only
+// Windows NSIS, but the all-or-nothing check still guards a missing .sig), makes the manifest
 // all-or-nothing: a missing artifact fails the job and the release stays a
 // draft.
 //
@@ -15,21 +16,13 @@
 
 import { pathToFileURL } from 'node:url';
 
-// Every key the shipped updater may look up. Windows resolves
-// windows-x86_64-{nsis,msi} first, then windows-x86_64 (NSIS preferred, as
-// updaterJsonPreferNsis did); macOS resolves darwin-<arch>-app, then
-// darwin-<arch>.
+// Every key the shipped updater may look up. Buraktrium ships Windows NSIS
+// only; Windows resolves windows-x86_64-nsis first, then windows-x86_64.
 export function expectedPlatforms(version) {
-  const nsis = `Agentrium_${version}_x64-setup.exe`;
-  const msi = `Agentrium_${version}_x64_en-US.msi`;
+  const nsis = `Buraktrium_${version}_x64-setup.exe`;
   return {
-    'darwin-aarch64': 'Agentrium_aarch64.app.tar.gz',
-    'darwin-aarch64-app': 'Agentrium_aarch64.app.tar.gz',
-    'darwin-x86_64': 'Agentrium_x64.app.tar.gz',
-    'darwin-x86_64-app': 'Agentrium_x64.app.tar.gz',
     'windows-x86_64': nsis,
     'windows-x86_64-nsis': nsis,
-    'windows-x86_64-msi': msi,
   };
 }
 

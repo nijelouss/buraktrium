@@ -43,17 +43,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.get-version.outputs.version }}
-          name: Agentrium v${{ steps.get-version.outputs.version }}
+          name: Buraktrium v${{ steps.get-version.outputs.version }}
           draft: true
           prerelease: false
           body: |
-            ## Agentrium v${{ steps.get-version.outputs.version }}
+            ## Buraktrium v${{ steps.get-version.outputs.version }}
 
             ### Installation
-            Download the appropriate installer for your platform:
-            - **Windows**: `.msi` or `.exe` (NSIS installer)
-            - **macOS (Apple Silicon)**: `.dmg`
-            - **macOS (Intel)**: `.dmg`
+            Windows: download and run the `-setup.exe` installer.
 
             ### Auto-Update
             Existing users will be notified of this update automatically.
@@ -68,15 +65,10 @@ jobs:
         include:
           - platform: windows-latest
             args: ''
-          - platform: macos-latest
-            args: '--target aarch64-apple-darwin'
-          - platform: macos-latest
-            args: '--target x86_64-apple-darwin'
 
     runs-on: ${{ matrix.platform }}
     # Lifted to job-level so step `if:` conditions can read it (step env isn't available there).
     env:
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       # crates.io intermittently returns "Error in the HTTP2 framing layer" on
       # GitHub Actions. Force HTTP/1.1 and bump the retry count so transient
       # blips don't fail a full release build.
@@ -96,7 +88,6 @@ jobs:
         uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9 # master
         with:
           toolchain: stable
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
@@ -106,60 +97,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Configure macOS signing and notarization
-        if: runner.os == 'macOS'
-        env:
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: |
-          node --test scripts/configure-macos-signing.test.mjs
-          node scripts/configure-macos-signing.mjs
-
-      - name: Install Azure Trusted Signing client (Windows)
-        if: matrix.platform == 'windows-latest' && env.AZURE_TENANT_ID != ''
-        shell: pwsh
-        run: |
-          $dlibDir = Join-Path $env:RUNNER_TEMP 'TrustedSigningClient'
-          New-Item -ItemType Directory -Force -Path $dlibDir | Out-Null
-          Invoke-WebRequest -Uri 'https://www.nuget.org/api/v2/package/Microsoft.Trusted.Signing.Client' -OutFile (Join-Path $dlibDir 'tsc.zip')
-          Expand-Archive -Path (Join-Path $dlibDir 'tsc.zip') -DestinationPath $dlibDir -Force
-          $dlib = Get-ChildItem -Path $dlibDir -Recurse -Filter 'Azure.CodeSigning.Dlib.dll' | Where-Object { $_.FullName -like '*x64*' } | Select-Object -First 1
-          if (-not $dlib) { throw 'Azure.CodeSigning.Dlib.dll (x64) not found' }
-          $metadata = Join-Path $env:RUNNER_TEMP 'metadata.json'
-          @{
-            Endpoint              = '${{ vars.TRUSTED_SIGNING_ENDPOINT }}'
-            CodeSigningAccountName = '${{ vars.TRUSTED_SIGNING_ACCOUNT }}'
-            CertificateProfileName = '${{ vars.TRUSTED_SIGNING_PROFILE }}'
-          } | ConvertTo-Json | Set-Content -Path $metadata -Encoding UTF8
-          "TRUSTED_SIGNING_DLIB=$($dlib.FullName)"     | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding UTF8
-          "TRUSTED_SIGNING_METADATA=$metadata"         | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding UTF8
-          "TRUSTED_SIGNING_ENABLED=true"               | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding UTF8
-          # signtool from the latest installed Windows SDK
-          $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse -Filter 'signtool.exe' -ErrorAction SilentlyContinue | Where-Object { $_.FullName -like '*\x64\*' } | Sort-Object FullName -Descending | Select-Object -First 1
-          if ($signtool) { "SIGNTOOL_PATH=$($signtool.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding UTF8 }
-
       - name: Build Tauri App
         uses: tauri-apps/tauri-action@73fb865345c54760d875b94642314f8c0c894afa # v0.6.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          # Azure auth for the Trusted Signing DLib (DefaultAzureCredential picks these up).
-          # AZURE_TENANT_ID inherited from job-level env. sign-windows.ps1 no-ops when TRUSTED_SIGNING_ENABLED is unset.
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          # Baked into the binary at compile time via option_env!("AGENTRIUM_FEEDBACK_URL")
-          # in src-tauri/src/feedback.rs. Absence at build time = dev fallback
-          # (writes to a local file), so leaving this unset on forks is safe.
-          AGENTRIUM_FEEDBACK_URL: https://ct-analytics.claude-terminal.workers.dev/feedback
         with:
           releaseId: ${{ needs.create-release.outputs.release_id }}
-          # latest.json is written once by the updater-json job below. Letting
-          # each parallel build merge it raced: v1.38.0 lost darwin-aarch64.
+          # latest.json is written once by the updater-json job below.
           includeUpdaterJson: false
           args: ${{ matrix.args }}
 
@@ -204,9 +150,3 @@ jobs:
               draft: false
             });
 
-      - name: Trigger website rebuild
-        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
-        with:
-          token: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
-          repository: talayash/agentrium-website
-          event-type: new-release

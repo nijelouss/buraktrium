@@ -37,6 +37,7 @@ import { AutoHideSidebar, SidebarPinButton } from './components/AutoHideSidebar'
 import { useWindowMaximized } from './hooks/useWindowMaximized';
 import { DockPreviewOverlay } from './components/DockPreviewOverlay';
 import { WhatsNewModal } from './components/WhatsNewModal';
+import { AutoUpdater } from './components/AutoUpdater';
 import { LoginModal } from './components/LoginModal';
 import { ClaudeConfigModal } from './components/ClaudeConfigModal';
 import { PreviewPanel } from './components/PreviewPanel';
@@ -1033,7 +1034,7 @@ function App() {
 
       {!showSetup && (
         <>
-          
+          {!isDetached && <AutoUpdater />}
           {/* Restore Banner (F3) - main window only. Slimmer, icon-led,
               inline-notification style matching IntelliJ's "did you mean" bar. */}
           <AnimatePresence>

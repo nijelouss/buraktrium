@@ -31,7 +31,7 @@
   },
   "bundle": {
     "active": true,
-    "createUpdaterArtifacts": false,
+    "createUpdaterArtifacts": true,
     "targets": [
       "nsis"
     ],
@@ -78,8 +78,10 @@
       }
     },
     "updater": {
-      "pubkey": "",
-      "endpoints": [],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEIwNzcwRDVERDFENTdDQzkKUldUSmZOWFJYUTEzc0c0bHZ5cW5XdE1qSjJPOVY2NUQwL0hwdEM2MjhIUkNBODhibmF2NFlZNi8K",
+      "endpoints": [
+        "https://github.com/nijelouss/buraktrium/releases/latest/download/latest.json"
+      ],
       "windows": {
         "installMode": "passive"
       }

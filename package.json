@@ -10,7 +10,8 @@
     "tauri": "tauri",
     "test": "vitest",
     "test:run": "vitest run",
-    "update-local": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/update-local.ps1"
+    "update-local": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/update-local.ps1",
+    "release": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/release.ps1"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",

@@ -12,7 +12,7 @@ import appIcon from '../assets/app-icon.png';
 
 const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
 const THIRTY_MINUTES_MS = 30 * 60 * 1000;
-const RELEASES_URL = 'https://github.com/talayash/agentrium/releases/latest';
+const RELEASES_URL = 'https://github.com/nijelouss/buraktrium/releases/latest';
 
 /** App mark for the alert. Alerts in macOS lead with the application's icon at
  *  ~64pt, with a small status badge for a non-neutral outcome. */
