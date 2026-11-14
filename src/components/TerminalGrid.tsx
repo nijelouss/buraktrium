@@ -158,7 +158,7 @@ const TerminalCell = memo(function TerminalCell({ terminalId, index, isFocused, 
       data-waiting={isWaiting || undefined}
       // Opaque because the focused header is only a tint, and free-form panes
       // can sit on top of each other.
-      className={`${maximized && !onHeaderPointerDown ? 'absolute inset-1 z-[900]' : 'relative h-full'} bg-elevation-0 flex flex-col rounded-md overflow-hidden transition-all ${
+      className={`${maximized && !onHeaderPointerDown ? 'absolute inset-1 z-[900]' : 'relative h-full'} bg-elevation-0 flex flex-col rounded-md overflow-clip transition-all ${
         dropOver
           ? 'ring-2 ring-accent-primary bg-accent-primary/5'
           : isWaiting && !isFocused
@@ -245,7 +245,7 @@ const TerminalCell = memo(function TerminalCell({ terminalId, index, isFocused, 
       </div>
 
       {/* Terminal Content */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-clip" onScroll={resetScroll}>
         <TerminalView terminalId={terminalId} />
       </div>
     </div>
@@ -379,6 +379,17 @@ const RESIZE_HANDLES: { edges: ResizeEdges; className: string }[] = [
   { edges: { bottom: true, left: true }, className: 'bottom-0 left-0 w-2.5 h-2.5 cursor-nesw-resize' },
   { edges: { bottom: true, right: true }, className: 'bottom-0 right-0 w-2.5 h-2.5 cursor-nwse-resize' },
 ];
+
+// Containers that only clip must never scroll. With `overflow: hidden` the
+// browser still scrolls them to reveal a focused element (xterm's hidden
+// textarea follows the cursor), which shifts every pane off screen and leaves
+// the wheel unable to reach the terminals until the grid is rebuilt.
+// `overflow: clip` (below) stops that; this resets any scroll that slips past.
+const resetScroll = (e: React.UIEvent<HTMLElement>) => {
+  const el = e.currentTarget;
+  if (el.scrollTop !== 0) el.scrollTop = 0;
+  if (el.scrollLeft !== 0) el.scrollLeft = 0;
+};
 
 const FULL_RECT: PaneRect = { x: 0, y: 0, w: 1, h: 1 };
 const MAXIMIZED_Z = 900;
@@ -814,7 +825,8 @@ export function TerminalGrid() {
 
       {/* Grid Container */}
       {gridFreeform ? (
-        <div ref={containerRef} data-free-container className="relative isolate flex-1 m-0.5 overflow-hidden">
+        <div ref={containerRef} data-free-container className="relative isolate flex-1 m-0.5 overflow-clip"
+          onScroll={resetScroll}>
           {gridTerminalIds.map((terminalId, index) => {
             const rect = gridFreeRects[terminalId];
             if (!rect) return null;
@@ -838,7 +850,8 @@ export function TerminalGrid() {
       ) : (
       <div
         ref={containerRef}
-        className="relative isolate flex-1 p-0.5 overflow-hidden"
+        className="relative isolate flex-1 p-0.5 overflow-clip"
+        onScroll={resetScroll}
         style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${config.cols}, 1fr)`,
