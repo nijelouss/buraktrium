@@ -1,4 +1,5 @@
 import { Sparkles } from 'lucide-react';
+import { getVersion } from '@tauri-apps/api/app';
 import { useAppStore } from '../store/appStore';
 import changelog from '../changelog.json';
 import { Modal } from './ui/Modal';
@@ -15,7 +16,7 @@ interface ChangelogEntry {
   features: ChangelogFeature[];
 }
 
-function compareVersions(a: string, b: string): number {
+export function compareVersions(a: string, b: string): number {
   const pa = a.split('.').map(Number);
   const pb = b.split('.').map(Number);
   for (let i = 0; i < 3; i++) {
@@ -23,6 +24,11 @@ function compareVersions(a: string, b: string): number {
     if ((pa[i] || 0) < (pb[i] || 0)) return -1;
   }
   return 0;
+}
+
+/** True when the changelog has an entry newer than `lastSeen`. */
+export function hasUnseenChangelog(lastSeen: string): boolean {
+  return (changelog as ChangelogEntry[]).some((e) => compareVersions(e.version, lastSeen) > 0);
 }
 
 export function WhatsNewModal() {
@@ -34,11 +40,17 @@ export function WhatsNewModal() {
   }).sort((a, b) => compareVersions(b.version, a.version));
 
   const handleClose = () => {
-    const latest = (changelog as ChangelogEntry[])[0]?.version;
-    if (latest) {
-      setLastSeenVersion(latest);
-    }
     closeWhatsNew();
+    // Record the running app version, not the changelog's top entry: a release
+    // without its own changelog entry would otherwise never match and the
+    // popup would come back on every launch.
+    getVersion()
+      .then(setLastSeenVersion)
+      .catch(() => {
+        // Not running under Tauri (tests): fall back to the newest entry.
+        const latest = (changelog as ChangelogEntry[])[0]?.version;
+        if (latest) setLastSeenVersion(latest);
+      });
   };
 
   return (

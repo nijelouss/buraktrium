@@ -36,7 +36,7 @@ import { SetupWizard } from './components/SetupWizard';
 import { AutoHideSidebar, SidebarPinButton } from './components/AutoHideSidebar';
 import { useWindowMaximized } from './hooks/useWindowMaximized';
 import { DockPreviewOverlay } from './components/DockPreviewOverlay';
-import { WhatsNewModal } from './components/WhatsNewModal';
+import { WhatsNewModal, hasUnseenChangelog } from './components/WhatsNewModal';
 import { AutoUpdater } from './components/AutoUpdater';
 import { LoginModal } from './components/LoginModal';
 import { ClaudeConfigModal } from './components/ClaudeConfigModal';
@@ -293,7 +293,10 @@ function App() {
           // Fresh install - just record the current version, no popup
           setLastSeenVersion(currentVersion);
         } else if (lastSeenVersion !== currentVersion) {
-          openWhatsNew();
+          // Nothing newer in the changelog (e.g. a release without notes):
+          // record the version silently instead of showing an empty popup.
+          if (hasUnseenChangelog(lastSeenVersion)) openWhatsNew();
+          else setLastSeenVersion(currentVersion);
         }
       } catch (err) {
         reportInvokeFailure('get_version_whats_new', err);

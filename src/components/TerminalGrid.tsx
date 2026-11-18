@@ -158,7 +158,7 @@ const TerminalCell = memo(function TerminalCell({ terminalId, index, isFocused, 
       data-waiting={isWaiting || undefined}
       // Opaque because the focused header is only a tint, and free-form panes
       // can sit on top of each other.
-      className={`${maximized && !onHeaderPointerDown ? 'absolute inset-1 z-[900]' : 'relative h-full'} bg-elevation-0 flex flex-col rounded-md overflow-clip transition-all ${
+      className={`${maximized && !onHeaderPointerDown ? 'absolute inset-1 z-[900]' : 'relative h-full min-h-0 min-w-0'} bg-elevation-0 flex flex-col rounded-md overflow-clip transition-all ${
         dropOver
           ? 'ring-2 ring-accent-primary bg-accent-primary/5'
           : isWaiting && !isFocused
@@ -245,7 +245,7 @@ const TerminalCell = memo(function TerminalCell({ terminalId, index, isFocused, 
       </div>
 
       {/* Terminal Content */}
-      <div className="flex-1 overflow-clip" onScroll={resetScroll}>
+      <div className="flex-1 min-h-0 overflow-clip" onScroll={resetScroll}>
         <TerminalView terminalId={terminalId} />
       </div>
     </div>
@@ -825,7 +825,7 @@ export function TerminalGrid() {
 
       {/* Grid Container */}
       {gridFreeform ? (
-        <div ref={containerRef} data-free-container className="relative isolate flex-1 m-0.5 overflow-clip"
+        <div ref={containerRef} data-free-container className="relative isolate flex-1 min-h-0 m-0.5 overflow-clip"
           onScroll={resetScroll}>
           {gridTerminalIds.map((terminalId, index) => {
             const rect = gridFreeRects[terminalId];
@@ -850,12 +850,12 @@ export function TerminalGrid() {
       ) : (
       <div
         ref={containerRef}
-        className="relative isolate flex-1 p-0.5 overflow-clip"
+        className="relative isolate flex-1 min-h-0 p-0.5 overflow-clip"
         onScroll={resetScroll}
         style={{
           display: 'grid',
-          gridTemplateColumns: `repeat(${config.cols}, 1fr)`,
-          gridTemplateRows: `repeat(${config.rows}, 1fr)`,
+          gridTemplateColumns: `repeat(${config.cols}, minmax(0, 1fr))`,
+          gridTemplateRows: `repeat(${config.rows}, minmax(0, 1fr))`,
           gap: '2px',
         }}
       >
